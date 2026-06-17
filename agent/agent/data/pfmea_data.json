@@ -1,0 +1,1032 @@
+{
+  "meta": {
+    "title": "製剤工程 PFMEA 情報資産（架空データ）",
+    "line": "固形製剤（錠剤）製造ライン A棟2階",
+    "version": "Rev.3",
+    "last_updated": "2026-04-10",
+    "note": "本データは技術検討用に作成した架空のサンプルであり、実在の製造ラインの情報ではありません。"
+  },
+  "processes": [
+    {
+      "process_id": "P01",
+      "process_name": "秤量",
+      "process_no": 10,
+      "description": "原薬・添加剤を処方量どおりに計量し、原料コンテナへ投入する工程",
+      "equipment": "電子天秤、原料投入ステーション"
+    },
+    {
+      "process_id": "P02",
+      "process_name": "混合",
+      "process_no": 20,
+      "description": "計量済みの原薬・添加剤を高速攪拌混合機で均一に混合する工程",
+      "equipment": "高速攪拌混合機（ハイスピードミキサー）"
+    },
+    {
+      "process_id": "P03",
+      "process_name": "造粒",
+      "process_no": 30,
+      "description": "結合剤（精製水・エタノール溶液等）を添加しながら混合粉末を顆粒化する工程",
+      "equipment": "流動層造粒乾燥機"
+    },
+    {
+      "process_id": "P04",
+      "process_name": "乾燥",
+      "process_no": 40,
+      "description": "造粒した湿顆粒を熱風で乾燥し、規定の水分値まで低下させる工程",
+      "equipment": "流動層造粒乾燥機（連続工程）"
+    },
+    {
+      "process_id": "P05",
+      "process_name": "整粒",
+      "process_no": 50,
+      "description": "乾燥顆粒を篩過し、粒度を均一化する工程",
+      "equipment": "整粒機（パワーミル）"
+    },
+    {
+      "process_id": "P06",
+      "process_name": "打錠",
+      "process_no": 60,
+      "description": "滑沢剤を添加した顆粒をロータリー式打錠機で圧縮成形し、素錠を得る工程",
+      "equipment": "ロータリー式打錠機"
+    },
+    {
+      "process_id": "P07",
+      "process_name": "コーティング",
+      "process_no": 70,
+      "description": "素錠の表面にフィルムコート液を噴霧し、薄膜を形成する工程",
+      "equipment": "パンコーティング機"
+    },
+    {
+      "process_id": "P08",
+      "process_name": "外観検査",
+      "process_no": 80,
+      "description": "自動外観検査機により錠剤の異物・欠け・割れ・色調等を検査する工程",
+      "equipment": "自動外観検査機（画像検査）"
+    },
+    {
+      "process_id": "P09",
+      "process_name": "充填",
+      "process_no": 90,
+      "description": "検査合格品をPTPシートまたは瓶へ充填する工程",
+      "equipment": "PTP包装機、瓶充填機"
+    },
+    {
+      "process_id": "P10",
+      "process_name": "包装",
+      "process_no": 100,
+      "description": "PTPシートまたは瓶を外箱に封入し、添付文書とともに梱包する工程",
+      "equipment": "カートナー、封函機"
+    }
+  ],
+  "fmea_records": [
+    {
+      "record_id": "F0101",
+      "process_id": "P01",
+      "function": "原薬・添加剤を処方量どおりに正確に計量する",
+      "failure_mode": "計量過多・計量不足",
+      "failure_effect": "後工程での含量不均一、最終製品の含量規格外れ",
+      "severity": 8,
+      "potential_cause": [
+        "天秤のゼロ点調整忘れ",
+        "天秤の校正期限切れ",
+        "原料コンテナの残留付着による表示誤差",
+        "作業者のヒューマンエラー（処方量の見間違い）"
+      ],
+      "occurrence": 3,
+      "current_control": "計量記録のダブルチェック（作業者＋確認者）、天秤の日次校正確認",
+      "detection": 4,
+      "rpn": 96,
+      "recommended_action": "計量データの自動記録システム（天秤と処方データの自動照合）導入",
+      "keywords": ["秤量", "計量", "含量", "天秤", "校正", "ヒューマンエラー", "処方量"]
+    },
+    {
+      "record_id": "F0103",
+      "process_id": "P01",
+      "function": "原薬・添加剤を取り違えなく計量する",
+      "failure_mode": "原料の取り違え（類似容器・類似名称の誤投入）",
+      "failure_effect": "誤った原薬・添加剤の使用による品質異常、重大な品質クレーム",
+      "severity": 9,
+      "potential_cause": [
+        "原料容器の表示が類似しており目視確認だけでは判別困難",
+        "複数原料の同時計量による取り違え",
+        "ラベル貼付ミス（前回原料のラベル残留）"
+      ],
+      "occurrence": 2,
+      "current_control": "バーコードによる原料照合（スキャン必須化）、計量前の現品確認（複数名）",
+      "detection": 2,
+      "rpn": 36,
+      "recommended_action": "原料保管棚のロケーション管理とバーコード照合の連動強化",
+      "keywords": ["取り違え", "原料", "誤投入", "バーコード", "ラベル", "類似名称"]
+    },
+    {
+      "record_id": "F0104",
+      "process_id": "P01",
+      "function": "計量済み原料を適切な保管条件下で次工程まで管理する",
+      "failure_mode": "計量済み原料の保管中の品質劣化（吸湿・変質）",
+      "failure_effect": "後工程（造粒・打錠）での加工性不良、製品安定性への影響",
+      "severity": 5,
+      "potential_cause": [
+        "保管エリアの温湿度管理不備",
+        "原料コンテナの密閉不良",
+        "計量から次工程までの待機時間の超過"
+      ],
+      "occurrence": 3,
+      "current_control": "保管エリアの温湿度記録モニタリング、待機時間の上限設定と記録",
+      "detection": 4,
+      "rpn": 60,
+      "recommended_action": "温湿度アラートの自動通知システム導入",
+      "keywords": ["保管", "吸湿", "変質", "温湿度", "待機時間", "劣化"]
+    },
+    {
+      "record_id": "F0105",
+      "process_id": "P01",
+      "function": "原薬・添加剤の使用期限・使用可否を正しく確認する",
+      "failure_mode": "使用期限切れ原料の使用",
+      "failure_effect": "原薬・添加剤の力価低下、製品品質への影響",
+      "severity": 7,
+      "potential_cause": [
+        "原料管理システムと現場在庫の不整合",
+        "使用期限表示の見落とし",
+        "先入れ先出し（FIFO）運用の不徹底"
+      ],
+      "occurrence": 2,
+      "current_control": "計量前の使用期限確認（システム照合）、在庫管理システムでのアラート設定",
+      "detection": 2,
+      "rpn": 28,
+      "recommended_action": "使用期限のバーコード照合による自動チェック化",
+      "keywords": ["使用期限", "期限切れ", "FIFO", "在庫管理", "力価低下"]
+    },
+    {
+      "record_id": "F0102",
+      "process_id": "P01",
+      "function": "原薬・添加剤を異物混入なく計量する",
+      "failure_mode": "異物混入（金属異物・他原料混入）",
+      "failure_effect": "製品中への異物混入、品質クレーム、回収リスク",
+      "severity": 9,
+      "potential_cause": [
+        "計量器具の洗浄不足（前バッチの原料残留）",
+        "原料保管容器の破損による異物混入",
+        "作業エリアの動線管理不備による交差汚染"
+      ],
+      "occurrence": 2,
+      "current_control": "計量前のライン洗浄確認（清掃記録）、原料の開封前外観確認",
+      "detection": 5,
+      "rpn": 90,
+      "recommended_action": "金属探知機の計量工程への追加設置を検討",
+      "keywords": ["異物", "異物混入", "金属", "交差汚染", "洗浄", "コンタミ"]
+    },
+    {
+      "record_id": "F0201",
+      "process_id": "P02",
+      "function": "原薬・添加剤を均一に混合する",
+      "failure_mode": "混合不均一（含量偏析）",
+      "failure_effect": "錠剤間の含量均一性不良、規格外れ品の発生",
+      "severity": 8,
+      "potential_cause": [
+        "混合時間の設定不足",
+        "混合機の回転数不足・設定ミス",
+        "原薬粒子径と添加剤粒子径の差による偏析",
+        "投入順序の誤り"
+      ],
+      "occurrence": 4,
+      "current_control": "混合工程パラメータ（時間・回転数）の自動記録、サンプリングによる含量均一性試験",
+      "detection": 5,
+      "rpn": 160,
+      "recommended_action": "混合終点をNIR（近赤外分光）でリアルタイム監視する仕組みの導入",
+      "keywords": ["混合", "偏析", "含量均一性", "ミキサー", "攪拌", "投入順序"]
+    },
+    {
+      "record_id": "F0202",
+      "process_id": "P02",
+      "function": "原薬・添加剤を異物混入なく混合する",
+      "failure_mode": "混合機内部からの異物混入（パーツ破損・摩耗）",
+      "failure_effect": "製品中への金属・樹脂異物混入",
+      "severity": 9,
+      "potential_cause": [
+        "撹拌羽根のシール部品の経年劣化",
+        "定期点検（PM）の未実施・遅延"
+      ],
+      "occurrence": 2,
+      "current_control": "始業前点検（異音・異常振動確認）、PM計画に基づく部品交換",
+      "detection": 4,
+      "rpn": 72,
+      "recommended_action": "シール部品の交換サイクルを使用時間ベースで管理するシステムの導入",
+      "keywords": ["異物", "混合機", "破損", "摩耗", "点検", "シール"]
+    },
+    {
+      "record_id": "F0203",
+      "process_id": "P02",
+      "function": "原薬・添加剤を規定時間内で混合し生産性を確保する",
+      "failure_mode": "混合工程の処理時間超過（バッチサイクルタイム遅延）",
+      "failure_effect": "生産計画への影響、後工程の待機によるライン全体の遅延",
+      "severity": 3,
+      "potential_cause": [
+        "原料の流動性不良による投入時間の延長",
+        "混合機の異常停止・再起動",
+        "オペレーターの操作習熟度不足"
+      ],
+      "occurrence": 4,
+      "current_control": "工程進捗のリアルタイム監視、標準作業時間との比較管理",
+      "detection": 5,
+      "rpn": 60,
+      "recommended_action": "新人オペレーター向けの操作トレーニング動画の整備",
+      "keywords": ["処理時間", "サイクルタイム", "遅延", "生産性", "操作習熟度"]
+    },
+    {
+      "record_id": "F0204",
+      "process_id": "P02",
+      "function": "原薬・添加剤を静電気による付着・凝集なく混合する",
+      "failure_mode": "静電気による原料の容器内壁への付着・凝集",
+      "failure_effect": "混合不均一の助長、原料の歩留り低下",
+      "severity": 4,
+      "potential_cause": [
+        "低湿度環境での静電気発生",
+        "原料粒子の帯電しやすい物性",
+        "除電対策（アース等）の不備"
+      ],
+      "occurrence": 3,
+      "current_control": "混合室内の湿度管理、混合機の接地（アース）確認",
+      "detection": 4,
+      "rpn": 48,
+      "recommended_action": "イオナイザー（除電装置）の導入検討",
+      "keywords": ["静電気", "付着", "凝集", "帯電", "歩留り"]
+    },
+    {
+      "record_id": "F0205",
+      "process_id": "P02",
+      "function": "混合工程で前バッチの原料を持ち込まない",
+      "failure_mode": "前バッチ原料の交差汚染（混合機の洗浄不良）",
+      "failure_effect": "異なる製品・ロットの混入、重大な品質クレーム・回収リスク",
+      "severity": 9,
+      "potential_cause": [
+        "洗浄バリデーションで定めた手順の不徹底",
+        "混合機の死角部分（羽根裏側等）の洗浄残留",
+        "洗浄後の確認検査（ふき取り検査等）の省略"
+      ],
+      "occurrence": 2,
+      "current_control": "洗浄バリデーション手順書に基づく洗浄、洗浄後のふき取り検査",
+      "detection": 2,
+      "rpn": 36,
+      "recommended_action": "洗浄完了の判定基準を定量化し記録の電子化を進める",
+      "keywords": ["交差汚染", "洗浄不良", "持ち込み", "洗浄バリデーション", "ふき取り検査"]
+    },
+    {
+      "record_id": "F0301",
+      "process_id": "P03",
+      "function": "結合剤を添加しながら適切な大きさの顆粒を形成する",
+      "failure_mode": "過造粒（顆粒の粗大化）",
+      "failure_effect": "打錠工程での顆粒流動性不良、錠剤重量偏差の増大",
+      "severity": 6,
+      "potential_cause": [
+        "結合剤（精製水・エタノール溶液）の噴霧量過多",
+        "噴霧速度の設定誤り",
+        "造粒時間の延長",
+        "品温（プロダクト温度）の管理不良"
+      ],
+      "occurrence": 4,
+      "current_control": "造粒終点判定基準（品温・電流値モニタリング）に基づく自動停止",
+      "detection": 3,
+      "rpn": 72,
+      "recommended_action": "造粒終点判定にトルクセンサーを追加し検出感度を向上",
+      "keywords": ["造粒", "過造粒", "粗大化", "噴霧", "流動性", "顆粒"]
+    },
+    {
+      "record_id": "F0302",
+      "process_id": "P03",
+      "function": "結合剤を添加しながら適切な大きさの顆粒を形成する",
+      "failure_mode": "未造粒・微粉過多（造粒不足）",
+      "failure_effect": "打錠工程での打錠障害（キャッピング・ラミネーション）、粉立ちによる作業環境悪化",
+      "severity": 6,
+      "potential_cause": [
+        "結合剤の噴霧量不足",
+        "造粒時間の不足",
+        "原料の流動性不良による濡れ不足"
+      ],
+      "occurrence": 3,
+      "current_control": "造粒中の品温モニタリング、目視によるサンプリング確認",
+      "detection": 4,
+      "rpn": 72,
+      "recommended_action": "結合剤噴霧ポンプの流量校正頻度の見直し",
+      "keywords": ["造粒不足", "微粉", "粉立ち", "結合剤", "濡れ不足"]
+    },
+    {
+      "record_id": "F0303",
+      "process_id": "P03",
+      "function": "造粒中に顆粒の偏析・ダマ（凝集塊）を発生させない",
+      "failure_mode": "ダマ（過大凝集塊）の発生",
+      "failure_effect": "整粒工程での篩網の目詰まり、打錠工程での重量偏差増大",
+      "severity": 5,
+      "potential_cause": [
+        "結合剤の局所的な過剰噴霧（噴霧パターンの偏り）",
+        "流動層内の流動不良（デッドスポットの発生）",
+        "原料の付着性が想定より高い"
+      ],
+      "occurrence": 3,
+      "current_control": "造粒中の流動状態の目視確認、噴霧ノズルの位置点検",
+      "detection": 4,
+      "rpn": 60,
+      "recommended_action": "流動層内の温度分布センサーの増設によるデッドスポット検知",
+      "keywords": ["ダマ", "凝集塊", "目詰まり", "流動不良", "篩網"]
+    },
+    {
+      "record_id": "F0304",
+      "process_id": "P03",
+      "function": "造粒工程で異物混入なく顆粒を形成する",
+      "failure_mode": "フィルター破損による微粉の外部漏出・異物混入",
+      "failure_effect": "作業環境の汚染、製品への異物混入リスク",
+      "severity": 7,
+      "potential_cause": [
+        "排気フィルターの経年劣化・破損",
+        "フィルター交換時の取付不良"
+      ],
+      "occurrence": 2,
+      "current_control": "フィルターの定期点検・差圧モニタリング、交換後の取付確認",
+      "detection": 3,
+      "rpn": 42,
+      "recommended_action": "フィルター差圧の異常値アラート機能の追加",
+      "keywords": ["フィルター", "破損", "漏出", "異物混入", "差圧"]
+    },
+    {
+      "record_id": "F0401",
+      "process_id": "P04",
+      "function": "湿顆粒を規定水分値まで乾燥する",
+      "failure_mode": "過乾燥（水分値が規格下限を下回る）",
+      "failure_effect": "打錠時の錠剤硬度不足、崩壊性試験への影響",
+      "severity": 5,
+      "potential_cause": [
+        "熱風温度の設定過多",
+        "乾燥時間の過剰設定",
+        "水分終点判定の誤り"
+      ],
+      "occurrence": 3,
+      "current_control": "乾燥中の品温・排気温度モニタリング、乾燥後の水分値測定（LOD測定）",
+      "detection": 3,
+      "rpn": 45,
+      "recommended_action": "水分終点のオンライン水分計（NIR）による自動制御化",
+      "keywords": ["乾燥", "過乾燥", "水分", "硬度", "崩壊性", "LOD"]
+    },
+    {
+      "record_id": "F0402",
+      "process_id": "P04",
+      "function": "湿顆粒を規定水分値まで乾燥する",
+      "failure_mode": "乾燥不足（水分値が規格上限を超える）",
+      "failure_effect": "打錠時の顆粒の付着・スティッキング、保存中の安定性低下",
+      "severity": 6,
+      "potential_cause": [
+        "熱風温度の設定不足",
+        "乾燥時間の不足",
+        "フィルターの目詰まりによる熱風流量低下"
+      ],
+      "occurrence": 3,
+      "current_control": "乾燥終了後の水分値測定（全バッチ実施）",
+      "detection": 3,
+      "rpn": 54,
+      "recommended_action": "フィルター差圧モニタリングによる目詰まり早期検知",
+      "keywords": ["乾燥不足", "水分", "スティッキング", "付着", "フィルター"]
+    },
+    {
+      "record_id": "F0403",
+      "process_id": "P04",
+      "function": "顆粒を熱劣化させずに乾燥する",
+      "failure_mode": "熱風温度の異常上昇による原薬の熱劣化",
+      "failure_effect": "原薬の分解・力価低下、製品安定性試験での規格外れ",
+      "severity": 7,
+      "potential_cause": [
+        "温度制御システムの故障・センサー異常",
+        "熱風発生機の出力設定誤り"
+      ],
+      "occurrence": 2,
+      "current_control": "乾燥中の温度上限アラート設定、温度センサーの定期校正",
+      "detection": 3,
+      "rpn": 42,
+      "recommended_action": "温度センサーの二重化（バックアップセンサー設置）",
+      "keywords": ["熱劣化", "温度異常", "分解", "力価低下", "センサー"]
+    },
+    {
+      "record_id": "F0404",
+      "process_id": "P04",
+      "function": "乾燥工程中に顆粒の均一性を保つ",
+      "failure_mode": "流動層内でのバッチ内水分ばらつき（部位による乾燥差）",
+      "failure_effect": "打錠工程での顆粒物性のロット内ばらつき、硬度・重量偏差の増大",
+      "severity": 5,
+      "potential_cause": [
+        "熱風の流量分布の不均一",
+        "サンプリング位置による測定値の偏り",
+        "バッチサイズと装置容量のミスマッチ"
+      ],
+      "occurrence": 3,
+      "current_control": "複数地点からのサンプリングによる水分値確認",
+      "detection": 4,
+      "rpn": 60,
+      "recommended_action": "オンライン水分計を複数箇所に設置し分布を可視化",
+      "keywords": ["水分ばらつき", "不均一", "サンプリング", "硬度偏差"]
+    },
+    {
+      "record_id": "F0405",
+      "process_id": "P04",
+      "function": "乾燥工程で静電気による粉末の飛散・付着を防ぐ",
+      "failure_mode": "乾燥中の静電気による微粉のフィルター付着・収率低下",
+      "failure_effect": "製品収率の低下、フィルター負荷増大による乾燥効率の悪化",
+      "severity": 3,
+      "potential_cause": [
+        "乾燥室内の低湿度環境",
+        "原料粉末の帯電性の高さ",
+        "アース・除電対策の不備"
+      ],
+      "occurrence": 3,
+      "current_control": "乾燥室内の湿度管理、装置アースの定期確認",
+      "detection": 4,
+      "rpn": 36,
+      "recommended_action": "除電バーの設置検討",
+      "keywords": ["静電気", "微粉", "フィルター付着", "収率低下", "除電"]
+    },
+    {
+      "record_id": "F0501",
+      "process_id": "P05",
+      "function": "乾燥顆粒を篩過し均一な粒度に整える",
+      "failure_mode": "粒度の不均一（粗大粒・微粉の残存）",
+      "failure_effect": "打錠工程での重量偏差増大、流動性不良による充填不良",
+      "severity": 5,
+      "potential_cause": [
+        "篩網の破損・目詰まり",
+        "整粒機の回転速度設定誤り",
+        "篩網のメッシュサイズ選定誤り"
+      ],
+      "occurrence": 3,
+      "current_control": "整粒前後の篩網外観点検、整粒後の粒度分布サンプリング測定",
+      "detection": 4,
+      "rpn": 60,
+      "recommended_action": "篩網の使用回数管理による定期交換ルールの設定",
+      "keywords": ["整粒", "粒度", "篩", "メッシュ", "重量偏差", "充填不良"]
+    },
+    {
+      "record_id": "F0502",
+      "process_id": "P05",
+      "function": "整粒工程で異物混入なく顆粒を整える",
+      "failure_mode": "整粒機内部の金属部品摩耗による異物混入",
+      "failure_effect": "後工程への金属異物の流出、重大な異物クレームリスク",
+      "severity": 8,
+      "potential_cause": [
+        "整粒機の刃部（インペラ）の摩耗",
+        "篩網の金属ワイヤーの断線・脱落"
+      ],
+      "occurrence": 2,
+      "current_control": "始業前の篩網外観点検、金属検出器によるインライン確認",
+      "detection": 3,
+      "rpn": 48,
+      "recommended_action": "篩網の交換基準（使用時間）を明確化し記録管理",
+      "keywords": ["整粒機", "金属", "異物", "摩耗", "篩網", "断線"]
+    },
+    {
+      "record_id": "F0503",
+      "process_id": "P05",
+      "function": "整粒工程で顆粒の発熱・物性変化を防ぐ",
+      "failure_mode": "整粒時の過度な摩擦による顆粒の発熱・物性変化",
+      "failure_effect": "顆粒の圧縮性低下、打錠工程での硬度不足",
+      "severity": 4,
+      "potential_cause": [
+        "整粒機の回転速度設定過多",
+        "投入量過多による負荷増大"
+      ],
+      "occurrence": 3,
+      "current_control": "整粒機の回転速度モニタリング、投入量の標準化",
+      "detection": 4,
+      "rpn": 48,
+      "recommended_action": "回転速度と投入量の標準作業条件の見直し",
+      "keywords": ["発熱", "摩擦", "物性変化", "圧縮性", "回転速度"]
+    },
+    {
+      "record_id": "F0504",
+      "process_id": "P05",
+      "function": "整粒工程の処理量を計画通りに確保する",
+      "failure_mode": "篩網の目詰まりによる処理速度の低下",
+      "failure_effect": "生産計画の遅延、後工程（打錠）の待機時間増加",
+      "severity": 3,
+      "potential_cause": [
+        "顆粒の付着性が高く篩網に残留しやすい",
+        "篩網の清掃頻度不足",
+        "湿度の高い環境での顆粒の凝集"
+      ],
+      "occurrence": 4,
+      "current_control": "処理速度のモニタリング、篩網清掃の定期スケジュール化",
+      "detection": 5,
+      "rpn": 60,
+      "recommended_action": "篩網の自動清掃機構（振動・エア吹き）の導入検討",
+      "keywords": ["目詰まり", "処理速度", "篩網", "清掃", "生産計画"]
+    },
+    {
+      "record_id": "F0601",
+      "process_id": "P06",
+      "function": "顆粒を圧縮成形し規定の重量・硬度の錠剤を得る",
+      "failure_mode": "重量偏差（錠剤重量が規格外）",
+      "failure_effect": "含量均一性不良、規格外れ品の発生、回収リスク",
+      "severity": 8,
+      "potential_cause": [
+        "顆粒の流動性不良による臼への充填量不足",
+        "杵・臼の摩耗",
+        "打錠機の充填深さ設定誤り",
+        "原料ホッパー内のブリッジング（粉末の架橋現象）"
+      ],
+      "occurrence": 4,
+      "current_control": "打錠中の自動重量測定（オートチェッカー）による全数または抜取検査",
+      "detection": 2,
+      "rpn": 64,
+      "recommended_action": "ホッパー内のブリッジング防止のためバイブレーター設置を検討",
+      "keywords": ["打錠", "重量偏差", "重量", "ブリッジング", "臼", "杵", "流動性"]
+    },
+    {
+      "record_id": "F0602",
+      "process_id": "P06",
+      "function": "顆粒を圧縮成形し外観に欠陥のない錠剤を得る",
+      "failure_mode": "キャッピング・ラミネーション（錠剤の層状剥離）",
+      "failure_effect": "外観不良品の発生、コーティング工程での不良拡大",
+      "severity": 6,
+      "potential_cause": [
+        "顆粒中の空気の巻き込み（脱気不足）",
+        "打錠圧の設定過多",
+        "杵先端の損傷・摩耗",
+        "顆粒の水分値異常（過乾燥）"
+      ],
+      "occurrence": 4,
+      "current_control": "打錠開始時の外観抜取確認、打錠圧モニタリング",
+      "detection": 4,
+      "rpn": 96,
+      "recommended_action": "予圧（プレコンプレッション）機構の圧力設定見直し",
+      "keywords": ["キャッピング", "ラミネーション", "層状剥離", "打錠圧", "杵", "外観不良", "脱気"]
+    },
+    {
+      "record_id": "F0603",
+      "process_id": "P06",
+      "function": "顆粒を圧縮成形し規定硬度の錠剤を得る",
+      "failure_mode": "硬度不足・硬度過多",
+      "failure_effect": "硬度不足：搬送中の欠け・割れ／硬度過多：崩壊性試験不適合",
+      "severity": 7,
+      "potential_cause": [
+        "打錠圧の設定誤り",
+        "顆粒の圧縮性のばらつき（造粒条件の変動）",
+        "杵の摩耗による圧縮力低下"
+      ],
+      "occurrence": 3,
+      "current_control": "硬度試験（抜取）、打錠圧の自動記録",
+      "detection": 3,
+      "rpn": 63,
+      "recommended_action": "硬度測定頻度の見直し（重量測定と連動した抜取強化）",
+      "keywords": ["硬度", "硬度不足", "崩壊性", "欠け", "割れ", "打錠圧"]
+    },
+    {
+      "record_id": "F0604",
+      "process_id": "P06",
+      "function": "顆粒を圧縮成形し異物のない錠剤を得る",
+      "failure_mode": "黒点異物（杵・臼由来の金属異物）",
+      "failure_effect": "外観検査での弾かれ増加、重大な異物クレームリスク",
+      "severity": 9,
+      "potential_cause": [
+        "杵・臼の摩耗・かじりによる金属粉発生",
+        "打錠機内部の清掃不足"
+      ],
+      "occurrence": 2,
+      "current_control": "金属検出器によるインライン検査、定期的な杵・臼の外観点検",
+      "detection": 3,
+      "rpn": 54,
+      "recommended_action": "杵・臼の交換サイクルの短縮検討（使用回数ベース管理）",
+      "keywords": ["黒点", "異物", "金属", "杵", "臼", "かじり"]
+    },
+    {
+      "record_id": "F0605",
+      "process_id": "P06",
+      "function": "顆粒を圧縮成形し杵への付着なく錠剤を排出する",
+      "failure_mode": "スティッキング（錠剤表面が杵に付着し一部が剥がれる）",
+      "failure_effect": "錠剤表面の外観不良、刻印部の欠損による識別性低下",
+      "severity": 6,
+      "potential_cause": [
+        "顆粒の水分値が高すぎる",
+        "結合剤の配合過多",
+        "杵刻印部への滑沢剤の付着不足",
+        "打錠室内の湿度が高い"
+      ],
+      "occurrence": 4,
+      "current_control": "打錠中の杵表面の定期確認、滑沢剤添加量の記録管理",
+      "detection": 4,
+      "rpn": 96,
+      "recommended_action": "外部滑沢方式（杵表面への直接滑沢剤噴霧）の導入検討",
+      "keywords": ["スティッキング", "付着", "杵", "刻印", "湿度", "外部滑沢"]
+    },
+    {
+      "record_id": "F0606",
+      "process_id": "P06",
+      "function": "顆粒を圧縮成形し臼への付着・引っ掻き傷なく錠剤を排出する",
+      "failure_mode": "バインディング（錠剤側面に縦方向の引っ掻き傷）",
+      "failure_effect": "錠剤側面の外観不良、摩損性試験での不適合リスク",
+      "severity": 5,
+      "potential_cause": [
+        "臼内壁と顆粒の摩擦増大（滑沢不足）",
+        "顆粒の水分値・結合剤量の異常",
+        "臼内壁の摩耗・表面粗さの増大"
+      ],
+      "occurrence": 3,
+      "current_control": "打錠開始時の外観抜取確認、臼の使用回数管理",
+      "detection": 4,
+      "rpn": 60,
+      "recommended_action": "臼内壁の表面処理（コーティング臼）への切替検討",
+      "keywords": ["バインディング", "引っ掻き傷", "臼", "摩擦", "摩損性"]
+    },
+    {
+      "record_id": "F0607",
+      "process_id": "P06",
+      "function": "打錠機を連続運転し生産性を確保する",
+      "failure_mode": "打錠機の異常停止（顆粒のブリッジング・センサー誤検知）によるライン停止",
+      "failure_effect": "生産計画の遅延、再起動時の初期不良品増加",
+      "severity": 3,
+      "potential_cause": [
+        "原料ホッパー内のブリッジング（架橋現象）",
+        "重量チェッカーの誤検知による頻繁な停止",
+        "杵・臼の異常検知センサーの過敏な設定"
+      ],
+      "occurrence": 4,
+      "current_control": "停止履歴のログ記録・分析、ホッパーへのバイブレーター設置",
+      "detection": 5,
+      "rpn": 60,
+      "recommended_action": "停止要因の自動分類とダッシュボード化による傾向分析",
+      "keywords": ["異常停止", "ブリッジング", "ライン停止", "センサー誤検知", "生産性"]
+    },
+    {
+      "record_id": "F0701",
+      "process_id": "P07",
+      "function": "素錠の表面に均一なフィルムコート膜を形成する",
+      "failure_mode": "コーティング不均一（色調不均一・コートムラ）",
+      "failure_effect": "外観不良、ロット間の色調差によるクレーム",
+      "severity": 5,
+      "potential_cause": [
+        "パン内での錠剤の流動不良",
+        "スプレーガンの噴霧パターン異常（目詰まり・位置ずれ）",
+        "コーティング液の濃度・粘度の調製誤り",
+        "乾燥風量・温度の不均一"
+      ],
+      "occurrence": 4,
+      "current_control": "コーティング中の外観抜取確認、スプレーガンの始業前点検",
+      "detection": 4,
+      "rpn": 80,
+      "recommended_action": "スプレーガンの自動洗浄・点検プログラムの導入",
+      "keywords": ["コーティング", "色調", "コートムラ", "スプレー", "噴霧", "外観不良"]
+    },
+    {
+      "record_id": "F0702",
+      "process_id": "P07",
+      "function": "素錠の表面にフィルムコート膜を形成し錠剤同士の付着を防ぐ",
+      "failure_mode": "錠剤同士の付着（ツインング）",
+      "failure_effect": "外観不良品の発生、表面の欠け・割れの誘発",
+      "severity": 5,
+      "potential_cause": [
+        "コーティング液の噴霧量過多",
+        "パンの回転速度不足",
+        "乾燥風量不足による液膜の乾燥遅延"
+      ],
+      "occurrence": 3,
+      "current_control": "コーティング中の目視確認、工程パラメータの記録",
+      "detection": 4,
+      "rpn": 60,
+      "recommended_action": "パン回転速度と噴霧量の連動制御化",
+      "keywords": ["付着", "ツインング", "コーティング", "噴霧量", "乾燥風量"]
+    },
+    {
+      "record_id": "F0703",
+      "process_id": "P07",
+      "function": "素錠の表面にひび割れなくフィルムコート膜を形成する",
+      "failure_mode": "コーティング膜のひび割れ（クラッキング）",
+      "failure_effect": "薬物放出特性への影響、外観不良によるクレーム",
+      "severity": 6,
+      "potential_cause": [
+        "コーティング液の可塑剤量が不足",
+        "乾燥速度が速すぎる（膜の急速収縮）",
+        "コーティング後の急激な温度変化"
+      ],
+      "occurrence": 2,
+      "current_control": "コーティング処方の配合確認、乾燥条件のパラメータ記録",
+      "detection": 4,
+      "rpn": 48,
+      "recommended_action": "可塑剤配合比の見直しと小スケールでの事前検証強化",
+      "keywords": ["クラッキング", "ひび割れ", "可塑剤", "薬物放出", "乾燥速度"]
+    },
+    {
+      "record_id": "F0704",
+      "process_id": "P07",
+      "function": "コーティング工程で錠剤の破損なく処理する",
+      "failure_mode": "パン内での錠剤同士の衝突による欠け・割れ",
+      "failure_effect": "外観不良品の増加、コーティング歩留りの低下",
+      "severity": 5,
+      "potential_cause": [
+        "パンの回転速度過多",
+        "素錠自体の硬度不足（打錠工程からの引き継ぎ不良）",
+        "バッフル（攪拌羽根）の角度設定不良"
+      ],
+      "occurrence": 3,
+      "current_control": "コーティング前の素錠硬度確認、パン回転速度の標準化",
+      "detection": 4,
+      "rpn": 60,
+      "recommended_action": "バッフル角度の最適化に関する小スケール試験の実施",
+      "keywords": ["衝突", "欠け", "割れ", "歩留り", "バッフル", "回転速度"]
+    },
+    {
+      "record_id": "F0801",
+      "process_id": "P08",
+      "function": "錠剤の外観不良（異物・欠け・割れ・色調）を検出し除去する",
+      "failure_mode": "外観不良品の検出漏れ（検査機の感度不足）",
+      "failure_effect": "不良品の後工程流出、製品クレーム・回収リスク",
+      "severity": 9,
+      "potential_cause": [
+        "検査機のしきい値設定誤り",
+        "カメラレンズの汚れ・照明劣化",
+        "検査機の校正期限切れ"
+      ],
+      "occurrence": 2,
+      "current_control": "標準不良サンプルを用いた始業前感度確認（チャレンジテスト）",
+      "detection": 3,
+      "rpn": 54,
+      "recommended_action": "チャレンジテストの実施頻度を増やし記録を電子化",
+      "keywords": ["外観検査", "検出漏れ", "感度", "カメラ", "校正", "チャレンジテスト"]
+    },
+    {
+      "record_id": "F0802",
+      "process_id": "P08",
+      "function": "良品を不良品と誤判定せず後工程へ送る",
+      "failure_mode": "良品の過剰弾き（過検出）による歩留り低下",
+      "failure_effect": "生産性低下、不要な再検査作業の発生",
+      "severity": 3,
+      "potential_cause": [
+        "検査しきい値の設定が厳しすぎる",
+        "照明条件の変化による誤検知",
+        "錠剤搬送時の振動による見え方のばらつき"
+      ],
+      "occurrence": 4,
+      "current_control": "弾かれ品の定期的な再判定・しきい値見直しレビュー",
+      "detection": 5,
+      "rpn": 60,
+      "recommended_action": "AI画像判定モデルへの更新による誤検出率の低減",
+      "keywords": ["過検出", "歩留り", "弾かれ", "しきい値", "誤検知"]
+    },
+    {
+      "record_id": "F0803",
+      "process_id": "P08",
+      "function": "検査機での搬送中に錠剤を破損させない",
+      "failure_mode": "検査機内での搬送中の錠剤破損（新たな欠け・割れの発生）",
+      "failure_effect": "検査前は良品だった錠剤が検査工程で不良化する歩留り低下",
+      "severity": 4,
+      "potential_cause": [
+        "搬送ベルト・ターンテーブルの速度設定過多",
+        "搬送経路の段差・摩耗による衝撃",
+        "錠剤硬度が低い場合の搬送耐性不足"
+      ],
+      "occurrence": 3,
+      "current_control": "搬送速度の標準化、搬送路の定期点検",
+      "detection": 4,
+      "rpn": 48,
+      "recommended_action": "搬送路の緩衝材追加による衝撃低減",
+      "keywords": ["搬送", "破損", "ベルト", "衝撃", "歩留り低下"]
+    },
+    {
+      "record_id": "F0804",
+      "process_id": "P08",
+      "function": "検査機を安定的に稼働させ検査能力を確保する",
+      "failure_mode": "検査機のカメラ・照明の経年劣化による判定精度の低下",
+      "failure_effect": "検出感度の徐々の低下、不良品の見逃しリスクの増大",
+      "severity": 7,
+      "potential_cause": [
+        "LED照明の輝度低下（経年劣化）",
+        "カメラレンズの微細な汚れの蓄積",
+        "校正記録の確認頻度不足"
+      ],
+      "occurrence": 3,
+      "current_control": "定期的なチャレンジテストと校正記録のトレンド管理",
+      "detection": 3,
+      "rpn": 63,
+      "recommended_action": "照明・カメラの予防保守スケジュールの厳格化",
+      "keywords": ["カメラ", "照明", "経年劣化", "判定精度", "見逃し"]
+    },
+    {
+      "record_id": "F0805",
+      "process_id": "P08",
+      "function": "検査済みの良品・不良品を取り違えなく後工程へ振り分ける",
+      "failure_mode": "良品・不良品の振分けエラー（仕分け機構の不具合）",
+      "failure_effect": "不良品の良品ラインへの混入、または良品の廃棄ロス",
+      "severity": 6,
+      "potential_cause": [
+        "仕分けエアバルブの応答遅延・故障",
+        "検査結果と仕分けタイミングの同期不良",
+        "搬送速度変更時のパラメータ未調整"
+      ],
+      "occurrence": 2,
+      "current_control": "仕分け機構の始業前動作確認、検査結果と仕分け実績の定期照合",
+      "detection": 3,
+      "rpn": 36,
+      "recommended_action": "仕分け機構の応答時間モニタリングとアラート機能の追加",
+      "keywords": ["振分け", "仕分け", "エラー", "混入", "同期不良"]
+    },
+    {
+      "record_id": "F0901",
+      "process_id": "P09",
+      "function": "検査合格品を規定数量どおりPTPシートへ充填する",
+      "failure_mode": "充填数不足・空シート（ブリスター内の錠剤欠落）",
+      "failure_effect": "患者の服薬不足リスク、重大な品質クレーム",
+      "severity": 9,
+      "potential_cause": [
+        "錠剤供給ホッパー内でのブリッジング",
+        "充填センサーの誤検知・故障",
+        "搬送ベルトの速度変動による供給不良"
+      ],
+      "occurrence": 2,
+      "current_control": "充填後のカメラ検査（全数・空シート検出）、印字検査との連動確認",
+      "detection": 2,
+      "rpn": 36,
+      "recommended_action": "充填センサーの二重化（光学＋重量）による検出精度向上",
+      "keywords": ["充填", "空シート", "PTP", "ブリスター", "欠落", "供給不良"]
+    },
+    {
+      "record_id": "F0902",
+      "process_id": "P09",
+      "function": "PTPシートに正しい印字（製品名・ロット番号・有効期限）を行う",
+      "failure_mode": "印字不良・印字欠け（ロット番号・有効期限の判読不能）",
+      "failure_effect": "トレーサビリティ確保不能、出荷判定保留",
+      "severity": 6,
+      "potential_cause": [
+        "印字インクの残量不足",
+        "印字ヘッドの汚れ・劣化",
+        "印字データ（ロット情報）の設定誤り"
+      ],
+      "occurrence": 3,
+      "current_control": "印字検査機によるOCR照合（全数検査）",
+      "detection": 2,
+      "rpn": 36,
+      "recommended_action": "インク残量の自動アラート機能の追加",
+      "keywords": ["印字", "印字不良", "ロット番号", "有効期限", "OCR", "トレーサビリティ"]
+    },
+    {
+      "record_id": "F0903",
+      "process_id": "P09",
+      "function": "PTPシートのアルミ箔・PVCシートを破損なく密封する",
+      "failure_mode": "シール不良（密封不完全によるピンホール・浮き）",
+      "failure_effect": "保存中の防湿性低下、製品の安定性試験不適合リスク",
+      "severity": 6,
+      "potential_cause": [
+        "シール用ヒーターの温度設定誤り",
+        "シールロールの圧着圧力不足",
+        "PVCシート・アルミ箔の材質ロット間差異"
+      ],
+      "occurrence": 3,
+      "current_control": "シール強度の抜取試験、ヒーター温度の自動記録",
+      "detection": 3,
+      "rpn": 54,
+      "recommended_action": "シール強度のインライン検査装置の導入検討",
+      "keywords": ["シール不良", "密封", "ピンホール", "防湿性", "アルミ箔"]
+    },
+    {
+      "record_id": "F0904",
+      "process_id": "P09",
+      "function": "瓶充填において規定数量・規定の乾燥剤を封入する",
+      "failure_mode": "瓶充填時の乾燥剤の封入忘れ・個数誤り",
+      "failure_effect": "瓶内の防湿性低下による製品安定性への影響",
+      "severity": 5,
+      "potential_cause": [
+        "乾燥剤投入装置の供給不良・空シュート",
+        "投入確認センサーの感度不足"
+      ],
+      "occurrence": 2,
+      "current_control": "乾燥剤投入後の重量確認（規定重量との照合）",
+      "detection": 3,
+      "rpn": 30,
+      "recommended_action": "乾燥剤投入確認センサーの感度見直しと二重チェック化",
+      "keywords": ["乾燥剤", "瓶充填", "封入忘れ", "防湿性", "重量確認"]
+    },
+    {
+      "record_id": "F1001",
+      "process_id": "P10",
+      "function": "PTPシート・添付文書を正しい組み合わせで外箱に封入する",
+      "failure_mode": "異品種混入・添付文書の取り違え",
+      "failure_effect": "別製品・別ロットの混入、重大な品質クレーム・回収",
+      "severity": 10,
+      "potential_cause": [
+        "ライン切替時の残留品確認不足（前バッチの残留）",
+        "添付文書の version管理誤り",
+        "作業者による梱包材の取り違え"
+      ],
+      "occurrence": 2,
+      "current_control": "ライン切替時のクリアランス確認（チェックリスト）、カメラによる外箱・添付文書の照合検査",
+      "detection": 2,
+      "rpn": 40,
+      "recommended_action": "梱包材バーコードと処方データの自動照合システム導入",
+      "keywords": ["異品種混入", "取り違え", "添付文書", "梱包", "ライン切替", "クリアランス"]
+    },
+    {
+      "record_id": "F1002",
+      "process_id": "P10",
+      "function": "外箱・添付文書を破損なく封入し封函する",
+      "failure_mode": "外箱の破損・封函不良",
+      "failure_effect": "輸送中の品質保持不能、外観クレーム",
+      "severity": 4,
+      "potential_cause": [
+        "封函機の圧着温度設定誤り",
+        "外箱材質の不良（厚み不足）",
+        "搬送中の衝撃"
+      ],
+      "occurrence": 3,
+      "current_control": "封函後の目視抜取確認、封函機の温度モニタリング",
+      "detection": 4,
+      "rpn": 48,
+      "recommended_action": "封函機の圧着温度の自動制御範囲の見直し",
+      "keywords": ["封函", "外箱", "破損", "梱包不良", "搬送"]
+    },
+    {
+      "record_id": "F1003",
+      "process_id": "P10",
+      "function": "外箱に正しいロット情報・有効期限を印字する",
+      "failure_mode": "外箱印字とPTPシート印字の不一致（ロット番号・有効期限の相違）",
+      "failure_effect": "トレーサビリティの不整合、出荷判定保留・回収リスク",
+      "severity": 7,
+      "potential_cause": [
+        "外箱印字機とPTP印字機のデータ連携不良",
+        "ライン切替時の印字データ更新忘れ",
+        "印字データの手動入力ミス"
+      ],
+      "occurrence": 2,
+      "current_control": "外箱とPTPシート印字内容のカメラ照合検査（全数）",
+      "detection": 2,
+      "rpn": 28,
+      "recommended_action": "印字データの一元管理システムへの統合",
+      "keywords": ["印字不一致", "ロット番号", "有効期限", "トレーサビリティ", "印字データ"]
+    },
+    {
+      "record_id": "F1004",
+      "process_id": "P10",
+      "function": "規定数量どおりに外箱を梱包し出荷用の段ボールに収納する",
+      "failure_mode": "梱包数量の過不足（段ボール内の外箱数の誤り）",
+      "failure_effect": "出荷数量の誤り、得意先での受領数不一致クレーム",
+      "severity": 4,
+      "potential_cause": [
+        "自動カウント装置のセンサー誤検知",
+        "手作業梱包時のカウントミス",
+        "段ボール梱包作業者の交代時の引継ぎ不備"
+      ],
+      "occurrence": 3,
+      "current_control": "梱包後の重量確認による数量検証",
+      "detection": 4,
+      "rpn": 48,
+      "recommended_action": "梱包数量の自動カウント＋重量検証のダブルチェック化",
+      "keywords": ["梱包数量", "過不足", "カウントミス", "出荷", "重量確認"]
+    },
+    {
+      "record_id": "F1005",
+      "process_id": "P10",
+      "function": "添付文書を正しい最新版で封入する",
+      "failure_mode": "添付文書の旧版混入（改訂前バージョンの誤封入）",
+      "failure_effect": "最新の安全性情報が患者・医療従事者に伝わらないリスク",
+      "severity": 8,
+      "potential_cause": [
+        "添付文書改訂時の旧版在庫の回収漏れ",
+        "ライン切替時の添付文書補充ミス",
+        "改訂情報の現場への伝達遅延"
+      ],
+      "occurrence": 2,
+      "current_control": "添付文書補充時のバーコード照合、改訂管理台帳との突合確認",
+      "detection": 3,
+      "rpn": 48,
+      "recommended_action": "添付文書改訂通知から現場反映までのリードタイム短縮の仕組み化",
+      "keywords": ["添付文書", "旧版", "改訂", "封入ミス", "安全性情報"]
+    },
+    {
+      "record_id": "F1006",
+      "process_id": "P10",
+      "function": "包装工程を計画通りの生産性で稼働させる",
+      "failure_mode": "カートナー（外箱組立機）の頻繁な小停止によるライン効率低下",
+      "failure_effect": "生産計画の遅延、人員の手待ち時間増加によるコスト増",
+      "severity": 2,
+      "potential_cause": [
+        "外箱（厚紙）の品質ばらつきによる組立不良",
+        "カートナーの調整不良（季節による湿度変化への未対応）"
+      ],
+      "occurrence": 4,
+      "current_control": "小停止回数のログ記録、季節ごとの調整パラメータの見直し",
+      "detection": 5,
+      "rpn": 40,
+      "recommended_action": "外箱資材の受入検査基準（厚み・剛性）の強化",
+      "keywords": ["カートナー", "小停止", "ライン効率", "外箱品質", "生産性"]
+    },
+    {
+      "record_id": "F1007",
+      "process_id": "P10",
+      "function": "出荷前の最終製品を適切な環境下で保管・搬送する",
+      "failure_mode": "出荷待機中の保管環境異常（温度逸脱）による品質劣化",
+      "failure_effect": "輸送・保管中の製品安定性への影響、苦情発生リスク",
+      "severity": 5,
+      "potential_cause": [
+        "保管エリアの空調設備の不調",
+        "出荷待機期間の長期化による管理漏れ",
+        "温度ロガーの設置・回収漏れ"
+      ],
+      "occurrence": 2,
+      "current_control": "保管エリアの温度モニタリング（24時間記録）、温度逸脱時のアラート",
+      "detection": 3,
+      "rpn": 30,
+      "recommended_action": "温度ロガーの設置忘れ防止のためのチェックリスト電子化",
+      "keywords": ["保管環境", "温度逸脱", "出荷待機", "品質劣化", "温度ロガー"]
+    }
+  ]
+}

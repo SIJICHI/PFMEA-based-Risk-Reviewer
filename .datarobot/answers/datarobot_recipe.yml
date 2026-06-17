@@ -1,0 +1,9 @@
+---
+# Changes here will be overwritten by Copier
+_commit: 1fb3794
+_src_path: https://github.com/datarobot/af-component-datarobot-recipe
+base_answers_file: .datarobot/answers/base.yml
+github_owner_group: '@datarobot/buzok-agentic'
+harness_org_id: buzok
+oss_repo_name: datarobot-agent-application
+private_repo_name: recipe-datarobot-agent-application

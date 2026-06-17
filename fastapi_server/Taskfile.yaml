@@ -1,0 +1,146 @@
+---
+version: '3'
+includes:
+  common:
+    taskfile: ../core/task-common.yaml
+    internal: true
+
+tasks:
+  auth-check:
+    silent: true
+    desc: "🔐 Check authentication prerequisites"
+    cmds:
+      - |
+        if command -v dr &> /dev/null && dr auth help 2>&1 | grep -q "check"; then
+          echo "🔐 Checking authentication.."
+          dr auth check
+        else
+          echo "ℹ️  Skipping auth check (not available)"
+        fi
+
+  install:
+    desc: 🔧 Install dependencies
+    cmds:
+      - echo "🔧 Installing dependencies.."
+      - "{{.UV_CMD}} sync --all-extras --dev"
+  uninstall:
+    desc: "🔧 Uninstall dependencies"
+    cmds:
+      - echo "🔧 Uninstalling dependencies.."
+      - rm -rf .venv
+
+  start:
+    silent: true
+    desc: "💻 Installing prior to start"
+    cmds:
+      - task: migrate
+  dev:
+    silent: true
+    desc: "🔨 Run the development server"
+    deps:
+      - auth-check
+      - migrate
+    cmds:
+      - echo "🔨 Starting development server"
+      - cd ../frontend_web && task build
+      - "{{.UV_CMD}} run uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload"
+    env:
+      TEST_USER_EMAIL: developer@example.com
+  lint:
+    silent: true
+    desc: 🧹 Run linters
+    cmds:
+      - echo "🧹 Running linters.."
+      - "{{.UV_CMD}} run ruff format ."
+      - "{{.UV_CMD}} run ruff check . --fix"
+      - "{{.UV_CMD}} run mypy --pretty ."
+  lint-check:
+    silent: true
+    desc: 🧹 Check whether the codebase is linted
+    cmds:
+      - "{{.UV_CMD}} run ruff format --check ."
+      - "{{.UV_CMD}} run ruff check ."
+      - "{{.UV_CMD}} run mypy --pretty ."
+  test:
+    silent: true
+    desc: "🧪 Run tests"
+    env:
+      SESSION_SECRET_KEY: test-secret-key
+    cmds:
+      - echo "🧪 Running tests.."
+      - cd ../frontend_web && task build
+      - "{{.UV_CMD}} run pytest --disable-warnings -s --cov --cov-report=html --cov-report=term --cov-report xml:.coverage.xml"
+
+  test-oauth:
+    desc: "🔐 Run OAuth integration tests"
+    vars:
+      COMPOSE_FILE: tests/integration/oauth/docker-compose.yml
+    cmds:
+      - echo "🔐 Starting mock OAuth2 server..."
+      - docker compose -f {{.COMPOSE_FILE}} up -d
+      - defer: docker compose -f {{.COMPOSE_FILE}} down
+      - echo "⏳ Waiting for server to be ready..."
+      - |
+        for i in $(seq 1 30); do
+          if curl -sf http://localhost:18881/google/.well-known/openid-configuration > /dev/null 2>&1; then
+            echo "✓ Mock OAuth2 server is ready"
+            break
+          fi
+          sleep 1
+        done
+      - echo "🧪 Running OAuth integration tests..."
+      - "{{.UV_CMD}} run pytest tests/integration/oauth/ -v"
+
+  test-oauth:server:start:
+    desc: "🚀 Start mock OAuth2 server"
+    cmds:
+      - docker compose -f tests/integration/oauth/docker-compose.yml up -d
+      - |
+        for i in $(seq 1 30); do
+          if curl -sf http://localhost:18881/google/.well-known/openid-configuration > /dev/null 2>&1; then
+            echo "✓ Mock OAuth2 server started on http://localhost:18881"
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "⚠ Server may still be starting..."
+
+  test-oauth:server:stop:
+    desc: "🛑 Stop mock OAuth2 server"
+    cmds:
+      - docker compose -f tests/integration/oauth/docker-compose.yml down
+      - echo "✓ Mock OAuth2 server stopped"
+
+  copyright:
+    aliases:
+      - license
+    desc: 📜 Apply license headers
+    cmds:
+      - echo "📜 Applying license headers"
+      - docker run  --rm -v $PWD:/github/workspace ghcr.io/apache/skywalking-eyes/license-eye:eb0e0b091ea41213f712f622797e37526ca1e5d6
+        -v info -c .licenserc.yaml header fix
+  copyright-check:
+    aliases:
+      - license-check
+    desc: 📜 Checking for license headers
+    cmds:
+      - echo "📜 Checking license headers"
+      - docker run  --rm -v $PWD:/github/workspace ghcr.io/apache/skywalking-eyes/license-eye:eb0e0b091ea41213f712f622797e37526ca1e5d6
+        -v info -c .licenserc.yaml header check
+  dev-agent:
+    silent: true
+    desc: 🔨 Run the development server with the local agent server
+    env:
+      AGENT_DEPLOYMENT_URL: http://localhost:8842
+      TEST_USER_EMAIL: developer@example.com
+      TEST_USER_API_KEY: '{{ .DATAROBOT_API_TOKEN }}'
+    deps:
+      - migrate
+    cmds:
+      - echo "🔨 Starting development server"
+      - "PYTHONPATH=$CALCULATED_PYTHONPATH {{.UV_CMD}} run uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload"
+  migrate:
+    desc: 🛠️ Migrate the database
+    cmds:
+      - echo "🛠️  Running migrations.."
+      - "{{.UV_CMD}} run python alembic_migration.py"

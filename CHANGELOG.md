@@ -1,0 +1,417 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## Unreleased Changes
+
+## 11.10.2
+- Added a prompt for choosing whether to enable agent memory when the dragent server is enabled.
+- Added a prompt for `MEM0_API_KEY` when Mem0 is selected as the agent memory provider and the key is not set in `.env`.
+- Updated `agent` component from 11.10.17 to 11.10.27:
+  - Exported `AGENT_MEMORY_SPACE_ID` when agent memory provider "Datarobot Memory Service" is selected
+  - NemoAgentToolkit `workflow.yaml` unconditionally uses `streaming_memory_agent` since it is a passthrough when memory is not configured.
+  - Added documentation for DataRobot moderations.
+  - Added documentation for agent memory integration.
+  - Switched the tool example from `generate_objectid` to `word_counter`.
+  - Upgraded `datarobot-genai` from 0.15.113 to 0.15.125
+    - Made `streaming_memory_agent` a passthrough when memory is not configured.
+    - Skipped `datarobot_moderation_middleware` when loading the NeMo Agent Toolkit `workflow.yaml` when running the agent from drum.
+
+
+## 11.10.1
+- Batched chat-history database writes during streaming in the FastAPI backend, reducing DataRobot Files API calls and improving streaming performance and persistence reliability under load.
+- Updated `agent` component from 11.10.11 to 11.10.15:
+  - Changed `AGENT_MEMORY_TTL_SECONDS` runtime parameter type from `numeric` to `string`
+  - Renamed `MEMORY_SPACE_ID` to `AGENT_MEMORY_SPACE_ID`
+  - Upgraded `datarobot-genai` from 0.15.105 to 0.15.113:
+    - Instrumented `DRMem0Editor` for otel tracing.
+    - Renamed `memory_space_id` to `agent_memory_space_id` and set it from the environment or runtime parameters.
+    - Upgraded `datarobot-moderations` from 11.2.30 to 11.2.33.
+
+## 11.10.0
+- Updated `agent` component from 11.10.0 to 11.10.11:
+  - Upgraded `datarobot-genai` from 0.15.78 to 0.15.105
+    - Added telemetry tracing support for `dragent` agents. Generated workflows now include `datarobot_otelcollector` collector configuration so framework spans get exported correctly.
+    - `DataRobotModerationMiddleware` can now be included unconditionally in `workflow.yaml`; it no-ops when moderation guards are not configured.
+    - Fixed LlamaIndex `DataRobotLiteLLM` requests for Azure/GPT backends by stripping tool-calling fields when no tools are provided.
+    - Improved memory support: `dr_mem0_memory` now supports default TTL, and `streaming_memory_agent` now resolves per-user inner agents while preserving AG-UI events.
+    - Added `drmcpbase` package for shared DataRobot API client and feature flag helpers; removed unused DRMCP memory-management/S3 support.
+    - LLM thinking/reasoning mode support for agents; surfacing reasoning events for Langgraph and llamaindex agents.
+  - Generated agent templates now use per-user registration across frameworks, enabling per-user MCP/function groups in memory-wrapped workflows.
+  - Enabled DataRobot Memory Service workflow configuration in the same paths that previously supported `mem0`.
+  - Disabled NeMo Agent Toolkit anonymous CLI telemetry by default (`NAT_TELEMETRY_ENABLED=false`) so `task agent:dev` no longer blocks on NAT's interactive consent prompt.
+- Renamed FastAPI application memory-space runtime parameters from `USE_MEMORY_SPACE` / `MEMORY_SPACE_ID` to `USE_APPLICATION_MEMORY_SPACE` / `APPLICATION_MEMORY_SPACE_ID`, keeping application persistence separate from agent memory runtime parameters.
+- Stand up memory spaces, if any, during `task deploy-dev`.
+
+## 11.9.4
+- Updated `agent` component from 11.9.10 to 11.10.0:
+  - Upgraded `datarobot-genai` from 0.15.71 to 0.15.78
+    - A non-existent deployment_id or external_id in the agent card registry now returns an actionable error message instead of a generic JSON-RPC -32603 Internal error.
+    - Upgrade to nvidia-nat 1.7.0, and pin starlette>=1.0.1 to mitigate CVE-2026-48710
+    - Fixed datarobot_api_key auth provider not forwarding Authorization: Bearer header on A2A RPC calls when the agent card has no security_schemes.
+    - Fixed asyncio.isasyncgenfunction error on Python 3.12+
+    - Unhandled exceptions in A2A remote calls (auth failures, network errors, timeouts) no longer crash the agent. Errors are caught and sanitised.
+    - Fixed agent card registry returning at most 25 cards by adding pagination support.
+
+## 11.9.3
+- Updated `agent` component from 11.9.2 to 11.9.10:
+  - *Breaking changes*: moved `workflow.yaml` from `agent/agent/workflow.yaml` to `agent/workflow.yaml` (agent component root). NAT agents load this file on DRUM as well as DRAgent; see [workflow.yaml path migration](docs/agent/migration-workflow-yaml-path.md).
+  - Allow running agent with `dragent` in Agentic Playground.
+  - Upgraded `datarobot-genai` from 0.15.53 to 0.15.71
+    - Fixed `extra_body` passthrough for workflow.yaml LLM configs
+    - A2A: Added agent card registry support
+    - A2A: Fixes to XAA token exchange flow; added `okta_sdk`/`http` implementations; renamed XAA env vars
+    - `dr_mem0_memory`: added DataRobot Memory Service routing and config fields
+    - Improved user identity resolution in `dragent`
+    - mem0 client User ID is now per-user
+    - Registered `datarobot_moderation` NAT middleware; updated moderation config structure in `workflow.yaml`
+    - DR FS checkpointing is now opt-in; checkpoint files use length-prefixed binary format
+    - Fixed `pulumi up` memory space when the user opts in.
+    - Fixed issue with CrewAI streaming when model returns an empty chunk.
+- [Experimental] Added optional DataRobot Memory Space persistence for chat history, OAuth identities, and user profiles in the FastAPI backend. Set `USE_MEMORY_SPACE=true` in `.env` and run `task deploy-dev` to provision a Memory Space via Pulumi and wire `USE_MEMORY_SPACE` / `MEMORY_SPACE_ID` on the custom application (not the agent deployment). Rerun `task deploy-dev` after changing `USE_MEMORY_SPACE` before `task dev`. Stores chats, messages, identities, and users as memory-service sessions and events instead of SQLite. Requires agentic memory API access on the organization (`ENABLE_AGENTIC_MEMORY_API`). See `docs/fastapi_server/README.md` and `.env.template`.
+- Updated `@dr-ui/chat` component
+  - Added start, end time for tool
+  - Improved tool rendering on UI
+  - Improved Chat performance on UI
+- Added user display settings: theme and language preferences
+
+## 11.9.2
+- Upgraded `agent` component from 11.9.0 to 11.9.2
+  - Upgraded `datarobot-genai` from 0.15.47 to 0.15.53
+    - FilesAPI implementation for Langgraph Checkpointer
+    - Fix the invalid message event crashes for Langgraph Agents
+    - Fix crewai agent failure to read MCP tools
+- Fixed order of ag-ui events
+
+## 11.9.1
+- Upgraded `agent` component from 11.8.36 to 11.9.0:
+  - Fixed issue with executing agents in Agentic Playground
+  - Fixed assistant message prefill for Anthropic models
+  - Excluded unnecessary dependencies
+  - Support cross-application access (XAA) in A2A
+- Upgraded MCP `datarobot-genai` from 0.15.32 to 0.15.46:
+  - Improved predictive drtools for MCP by avoiding blocking calls.
+
+## 11.9.0
+- Bumped `agent` component from 11.8.30 to 11.8.36
+  - Added documentation for NAT tools
+  - Upgraded `datarobot-genai` from 0.15.34 to 0.15.43:
+    - Fixed per user workflow for A2A
+    - Added `datarobot_mem0_memory` to NAT to be used with `auto_memory_agent`
+    - Added A2A agent card support
+    - Added documentation for configuring auth options for A2A agents
+    - Fixed NAT tool calls
+    - Added named parameters for agent class initialization
+    - Fixed AG-UI tool call lifecycle
+    - Added support for Okta cross-application access (XAA) in A2A
+
+## 11.8.5
+- Bumped `agent` component from 11.8.27 to 11.8.30
+  - Upgraded `datarobot-genai` from 0.15.24 to 0.15.34:
+    - Added `DataRobotLLMRouterConfig` (`datarobot-llm-router`) to NAT, plus `get_router_llm` for CrewAI and `RouterLLM` support for LangGraph and LlamaIndex, exposing `litellm.Router`-backed primary/fallback LLM behavior across all frameworks.
+  - Added new skill and documentation for configuring moderations for agent evaluation support
+  - Added LLM provider fallback support powered by `litellm.Router`: `workflow.yaml` snippets gain a `datarobot-llm-router` block with `primary` + `fallbacks`, and DRUM agents can use `get_router_llm()` in place of `get_llm()`. New doc page: `docs/agent/llm-fallback.md`.
+  - Added TTL to memory only if agent memory is enabled
+  - Streaming chat completion wrapper now emits a dedicated chunk for the `RUN_FINISHED` AG-UI event before the final stop chunk; agents asserting on streaming chunk counts must expect one extra chunk.
+- Upgraded MCP `datarobot-genai` from 0.15.2 to 0.15.32
+  - Improved predictive drtools for MCP agents: rich tool_metadata descriptions, robust batch download polling and async-safe waits, safer CSV/JSON parsing for realtime predict, and more resilient deployment CSV validation (importance + whitespace/empty rows).
+  - Categorized ToolErrors, OAuth access tokens with x-datarobot-*-access-token fallback, MCP logging that surfaces kinds to FastMCP, SDK ClientError → tool errors in predictive tools and improved third party APIs tool_metadata descriptions.
+  - Implemented pagination for predictive data MCP tools
+  - Improved MCP lineage sync logic and made it always run during user MCP startup.
+  - Implemented pagination for predictive model MCP tool
+
+## 11.8.4
+- Bumped `agent` component from 11.8.11 to 11.8.22
+  - Upgraded `datarobot-genai` from 0.14.4 to 0.15.15:
+    - Migrated NAT dependencies from 1.4.1 to 1.6.0.
+    - Relaxed `langgraph`/`langgraph-prebuilt` version constraints from `<1.1.0` to `<2.0.0`.
+    - Fixed NAT text extraction for DRAgentEventResponse objects.
+    - Fixed input converter to handle tool and reasoning role messages during conversation replay.
+    - Removed unnecessary custom chat completions route (now generated by default workflow config).
+  - Migrated dragent CLI frontend from Python to shell: `agent:dev` switched to `nat dragent serve`, and `agent:cli` forwarded commands to `nat dragent run`/`nat dragent query`.
+  - Removed DRAgent HTTP/SSE streaming implementation from `cli.py` and its associated tests.
+  - Added documentation on how to submit custom metrics.
+  - Fixed MCP URL in copier module configuration.
+
+## 11.8.3
+- Added documentation build setup using `properdocs` + `mkdocs-material` with DataRobot-branded styling.
+- Added 'task start-non-interactive' which runs 'task start' non interactively.
+- Improved lineage feature flag error handling.
+
+## 11.8.2
+- Bumped `agent` component from 11.8.8 to 11.8.11
+  - Used the 5XL resource bundle when `ENABLE_AGENT_HA_MODE` was enabled.
+  - Pinned `ag-ui-protocol` to 0.1.15.
+  - Reworked `agent/AGENTS.md` to reflect architecture changes.
+  - Removed `annoy` from agent dependencies as unnecessary.
+- Pinned the `ag-ui-protocol` version for the `fastapi_server` to the same version as the agent to prevent application errors from a version mismatch.
+- Bumped `mcp` component from 0.0.26 to 0.0.27:
+  - Upgraded `datarobot-genai[drmcp]` to `>=0.15.0,<0.16.0` (lockfile resolved to 0.15.2).
+  - CLI: cleared the `MCP_CLI_CONFIGS` interactive default, made the prompt optional, and stopped pre-selecting tool integrations.
+  - Expanded `docs/mcp_client_setup.md` with API token security practices, Cursor env interpolation for deployed servers, VS Code top-level `servers` layout with input variables for secrets, Claude Desktop guidance to keep tokens out of `args`, and related troubleshooting notes.
+
+## 11.8.1
+- Bumped `agent` component from 11.7.13 to 11.8.8:
+  - *Breaking changes*: agent templates (except `base`) no longer require to define agents within class `MyAgent`. They are now converted from their native framework primitives to `MyAgent` with a helper function. Documentation includes a migration guide.
+  - Decoupled agent and MCP adaptor.
+  - Decoupled agent and LLM.
+    - Unified and tested all LLM options: DataRobot LLM Gateway, DataRobot Deployed LLM, DataRobot Deployed NIM, External LLM
+  - Added `DRUM_CLIENT_REQUEST_TIMEOUT` runtime parameter.
+  - Upgrade libraries to fix CVEs.
+  - Bumped moderations library for asyncio fix.
+- Bumped `mcp` component from 0.0.20 to 0.0.26:
+  - Upgraded `datarobot-genai` to >=0.13.0 (fastmcp 3.2.0).
+  - Updated default execution environment version.
+  - Added `SESSION_SECRET_KEY` configuration for session cookie signing.
+  - Refreshed MCP documentation.
+  - Add AGENTS.md file with MCP server instructions
+- Updated component `llm` from 11.4.17 to 11.4.20
+  - Fixed deployed LLM configuration: exported `USE_DATAROBOT_LLM_GATEWAY=0` to prevent gateway routing when using a deployed model
+  - Renamed `TEXTGEN_DEPLOYMENT_ID` to `LLM_DEPLOYMENT_ID` for consistent naming
+  - Corrected name of LLM Blueprint with LLM Gateway option
+  - Exported URLs for RAG Playground and Deployment Console
+  - Added component documentation (`docs/llm.md`)
+- Fixed tracing setup so traces are configured and visible in the DataRobot app traces
+- Improved performance of application tool call processing.
+- Added AGENTS.md instructions for mcp server & improved instructions for frontend
+- Fixed Microsoft OAuth authlib configuration by moving to OIDC discovery (server_metadata_url) and adding missing openid email profile scopes required for reliable user identity retrieval.
+- Added environment variable overrides for OAuth endpoint URLs and expanded OAuth integration test coverage.
+- Updated triggers for frontend rebuild on deploy: now executed only when files change to not redeploy application every time
+- Added warnings about long deployment time for agents with custom docker context
+
+## 11.8.0
+- Updated `AGENTS.md` file with the frontend & fastapi server instructions
+
+## 11.7.2
+- Updated components `base`, `llm`, `agent`, `mcp_server` to allow injecting existing prediction environment
+- Component `llm` updated from 11.4.12 to 11.4.17:
+  - Allow selecting specific model from LLM gateway catalog
+  - Offer option using LLM gateway with an external model. This requires the minimal version of CLI 0.2.55
+- Component `mcp_server` updated from 0.0.15 to 0.0.19:
+  - Added saving MCP metadata and lineage through pulumi after deployment
+- `dr` minimal version updated 0.2.50->0.2.55
+  - Added support for pulumi login during start and dotenv setup
+  - Auto generation of global pulumi config pass-phrase
+
+## 11.7.1
+- Excluded LiteLLM releases `1.82.7` and `1.82.8` from resolution (security issue mitigation) for ALL components: agent, llm, fastapi_server, infra
+- Bumped `agent` component from 11.7.5 to 11.7.11:
+  - Bumped `datarobot-genai[langgraph, dragent]` from 0.8.6 to 0.8.8
+  - UV: multi-platform `environments` and overrides to drop unused transitive packages (`gevent`, `onnxruntime`, `fastembed`)
+  - Dynamic lock files for all agent types for strict control of dependencies
+- Bumped `llm` component from 11.4.6 to 11.4.12:
+  - Added error help to invalid provider for llm gateway
+  - Corrected naming for LLM credentials
+- Bumped `base` component
+- Bumped `fastapi_server` component
+- Bumped `ag-ui-protocol` in `fastapi_server`: aligned LiteLLM constraints with the agent stack
+- Removed authlib from CLI interactive setup
+- Updated @dr-ui components: replaced deprecated i18next-parser with i18next-cli, updated Markdown
+- Migratet Chat to @dr-ui/chat and used it as reusable component
+
+## 11.7.0
+- Bumped `agent` component from 11.6.20 to 11.7.5
+  - Support for NAT A2A
+  - Register function for CrewAI
+  - Use forwarded headers and authorization context when running agents with dragent
+  - Allow agents to be exposed via A2A and allow them to connect to A2A agents
+  - Fix issues of LangGraph MCP tools when working with `dragent`
+  - Disable step adaptor reporting LLM events twice for custom agents
+  - Enable `dragent` for `base` and `crewai` agents
+  - A2A Auth integration with `dragent`
+  - Pin compatible versions for `fastapi` and `starlette`
+  - Add event streaming to `llamaindex`
+- Added `install` as a prerequisite to `deploy` and `deploy-dev` tasks to ensure dependencies are up-to-date before deployment.
+
+## 11.6.4
+- Renamed `datarobot-agent-application` to Agentic Starter application template.
+- Bumped `agent` component from 11.6.20 to 11.6.30
+  - Upgraded `datarobot-genai` from 0.5.7 to 0.6.17
+    - Dropped `pydantic-ai-slim` dependency (CVE fix)
+    - All agents now emit AG-UI lifecycle events; removed raw string streaming code path
+    - Restructured tools from `drmcp.tools` to `drtools`
+    - Added MCP tool `deploy_custom_model` for deploying custom inference models to DataRobot MLOps
+  - Set agents to use the latest execution environment version to fix issues with pyarrow in Agentic Playground.
+  - Allowed forwarding all `x-datarobot-` headers to subcomponents
+  - [Feature in Development] `dragent` as a frontserver:
+    - Added register.py and workflow.yaml to all agent examples to support running agents with `dragent`
+    - Added environment variable `ENABLE_DRAGENT_SERVER` to enable running agent with `dragent` locally and in deployment (experimental option)
+- Updated `mcp_server` component from 0.0.13 to 0.0.15:
+  - Fixed loading JSON schemas from the package directory in DRUM adapter to work from wheel or source
+  - Fixed dynamic tool deployment registration to filter deployments with tool tag name and value using strict AND logic
+  - Fixed configuration parsing to correctly disable predictive tools when MCP_CLI_CONFIGS is empty
+  - Added always_prompt option to the MCP CLI config.
+- Improved App Settings page, changed UI routes for chats.
+- Fixed multi-turn conversations with tool calling.
+
+## 11.6.3
+-Updated `agent` component from 11.6.18 to 11.6.20:
+  - Update Moderations library to 11.2.20
+    - NaN bugfix for NeMo Evaluators
+    - Guideline adherence iterator update
+    - Otel metric support for streaming completions
+    - update llama-index-llms-langchain from 0.7.1 to 0.7.2
+
+
+## 11.6.2
+- Added reasoning event types support to agentic playground
+- Fixed markdown styles, scroll issue, minor layout fixes for Playground Chat component
+- Fixed frontend dependencies installation for task dev and `fastapi_server:test`
+- Updated `agent` component from 11.6.11 to 11.6.18:
+  - Added execution environment version fallback via resolve_execution_environment_version utility
+  - Added chat history example (example-chat-history-completion.json) and per-framework CLI docs
+  - Bumped datarobot-genai from 0.5.3 to 0.5.7 (MCP is no longer required for NAT)
+  - Fixed `nltk` CVE (nltk>=3.9.3)
+  - Simplified CLI chat history docstrings (unified across frameworks)
+- Updated `mcp_server` component from 0.0.5 to 0.0.13:
+  - Updated server startup to handle exceptions
+  - Added Lineage support
+  - Bumped up the datarobot-genai[drmcp] Sub Package (dependencies clean up)
+- Updated `dr-cli` minimum version to 0.2.50
+
+## 11.6.1
+- Renamed `datarobot-agent-application` to Agentic Starter Application Template.
+- Theme changed to match corporate DataRobot design. This includes colors, fonts, paddings, and typography. Reusable shadcn components from `@dr-ui` registry are installed.
+- Inject full stored chat history into `RunAgentInput` so downstream agents receive conversation context
+- Bump agent component from 11.6.3 to 11.6.10
+  - Migrate to new interface
+  - Refactor agent infra concurrency configuration
+  - Fix header forwarding in LangGraph
+  - Add debugpy for debugging
+  - Bump moderations version
+- Upgrade `datarobot-genai` from 0.4.0 to 0.5.3
+  - Chat history support across all agents
+  - Converted library extras into dependency groups
+  - MCP tool decorator improvements
+  - DataRobot client for tools
+  - MCP CLI config support
+- Force opentelemetry-semantic-conventions-ai==0.4.13 for incompatiblity with crewai==1.9.3
+
+## 11.6.0
+- Pin `pyarrow==20.0.0` to avoid an error in codespaces
+- Added support for alternative OAuth flow using Authlib
+- NAT 1.4, Langgraph 1.x, and llamaindex 0.14.x
+- New env var ENABLE_AGENT_HA_MODE to configure DRUM runtime params for agent custom model deployment HA concurrency with defaults
+
+## 11.5.1
+- Use model "unknown" in the request when running the agent
+
+## 11.5.0
+- Remove `preferred_model` argument from `MyAgent.llm` method
+- Lower `datarobot-drum` version upper limit to avoid `asyncio` errors in the playground
+- Add crew function to crewai
+- Stop testing Python 3.10 in CI
+- Improve `MyAgent` initialization to fall back to the configured default model when the provided model is `"unknown"` or `"datarobot-deployed-llm"`, avoiding invalid model selection.
+- Pin `anyio` and `packaging` to avoid import errors in the playground runtime.
+- Forward the identity header to `ChatLiteLLM` as `default_headers` when not using DataRobot LLM Gateway so direct LLM calls preserve identity context.
+
+## 11.4.9
+- Updated `agent/AGENTS.md` and added root level `AGENTS.md` file with the instructions on how to implement/deploy agents using supported AI frameworks
+
+## 11.4.8
+- Make agent package flat
+- Configuration of the local development port of the agent is done via the AGENT_PORT instead of the AGENT_ENDPOINT environment variable
+- Add `agent/AGENTS.md` documentation describing how to customize and extend the default LangGraph agent
+- Introduce Pulumi LLM infrastructure options for both LLM Gateway–backed models and existing registered LLM deployments
+- Open source MCP server AF component
+- Move the Gdrive tools to the DR GEN AI library.
+- Upgrade drmcp dependency to include integration tools: Gdrive, Microsoft SharePoint, Jira and Confluence
+- Add Microsoft OAuth support
+
+## 11.4.7
+- Fix empty last name validation issue in user create for fastapi_server backend
+- Fix for Taskfile removed in derived repositories
+- Fix missing trailing slash for URL service links in terminal print for task dev
+- Fix broken link for prompt management in README
+- Removed shortcuts for frontend dev server
+- Fix task agent:dev-stop
+- UI: Added confirmation dialog when removing chat
+- Removed Chainlit ui
+- Switch root `task dev` to use shared `drdev` from `datarobot`
+- Added MCP configuration options to select specific tools
+
+## 11.4.6
+- Fix for task dev in codespaces
+- Fix for dr start procedure
+- UI: Fix active send button when user input is empty
+
+## 11.4.5
+- Add release pipeline overrides
+- MCP Server migrate to use GenAI Agents image by default
+- `task dev` tracks start of all processes, and only shows status after all processes actually started
+- `task dev` shows only URL of a frontend service
+- Several README improvements
+  - Install prerequisite tools: add version check note and link to new "Detailed installation commands" section.
+  - New "Detailed installation commands": copy‑paste commands for macOS (Homebrew) and Linux (apt/curl) for dr-cli, git, uv, Pulumi, Taskfile, and node.
+  - Setup guidance: note for DataRobot codespaces to expose ports; expanded wizard walkthrough (Use Case ID instructions; Pulumi stack name constraint); bolded Chainlit playground section title.
+  - Troubleshooting: add "DataRobot codespace port configuration" subsection with explanation and image; clarify fixed vs configurable ports.
+  - Minor copy/clarity edits and reorganization of tips/notes.
+
+## 11.4.4
+- Fix not publishing fastapi_server/static directory
+
+## 11.4.3
+- Fix devcontainers configuration
+
+## 11.4.2
+- Rename custom_model to agentic_workflow
+- Rename web to fastapi_server
+- Fix tracing when using threading
+- Display tool invocations and results on the UI
+- Implement background chats
+- Fix mapping for chat history endpoint
+
+## 11.4.0
+- Reduce agents to just planner and writer
+- Fix the default model used everywhere to be a non-deprecated model
+- Fix issues related to docker_context usage in infra and move logic to fixed pulumi for version pinning
+- Fix NAT streaming
+- Event streaming for langgraph
+- Add parameter DATABASE_URI to setup wizard
+- Fix devcontainer configuration
+- Fix execution environment pinning in edge case with blank version id
+- Fix CVEs
+- Remove temperature from NAT workflow.yaml
+
+## 11.3.4
+- Add versions file
+
+## 11.3.3
+- Fix the root Taskfile
+
+## 11.3.2
+- Improvements to dev containers and start experience
+
+## 11.3.1
+- Fix error handling in UI
+- Remove mastra dependencies
+- Full dr start experience
+- Fix autoscroll behavior
+- OAuth fixes
+
+## 11.3.0
+- Fix devcontainer not compiling Dockerfile
+- Restore missing chainlit lit.py
+- Pin pulumi version so that it doesn't encounter github rate limiting
+- Show an error message in case agent response is empty
+- Fix migrations in task start
+
+## 0.0.6
+
+## 0.0.5
+
+## 0.0.4
+
+## 0.0.3
+
+## 0.0.2
+
+## 0.0.1
+- Auto-select (and create) pulumi stack if env variable is present
+- Upgrade datarobot in pyproject.toml
+- Append pulumi stack name from environment if present to all pulumi commands
+- Simplify all pulumi local and remote naming
+- Initial implementation

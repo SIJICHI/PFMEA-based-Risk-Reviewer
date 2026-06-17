@@ -1,0 +1,28 @@
+{
+  "model": "datarobot-deployed-llm",
+  "messages": [
+    {
+      "content": "あなたは製剤工程の PFMEA ナレッジ検索アシスタントです。",
+      "role": "system"
+    },
+    {
+      "content": "コーティングのムラを防ぐには？",
+      "role": "user"
+    },
+    {
+      "content": "コーティング工程（P07）では、レコード F0701（コーティング不均一・コートムラ）が該当します。主な要因はパン内での錠剤の流動不良やスプレーガンの噴霧パターン異常で、推奨対策はスプレーガンの自動洗浄・点検プログラムの導入です。",
+      "role": "assistant"
+    },
+    {
+      "content": "さきほどの工程で、RPNが高い不良モードはどれ？",
+      "role": "user"
+    }
+  ],
+  "n": 1,
+  "temperature": 0.01,
+  "extra_body": {
+    "api_key": "DATAROBOT_API_KEY",
+    "api_base": "https://app.datarobot.com",
+    "verbose": true
+  }
+}

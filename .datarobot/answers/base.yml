@@ -1,0 +1,9 @@
+---
+# Changes here will be overwritten by Copier
+_commit: 33c677c
+_src_path: https://github.com/datarobot/af-component-base.git
+copyright_year: 2025
+include_core: true
+template_code_name: agentic-application-starter
+template_description: This application is a template for Generative AI agentic solutions
+template_name: Agentic Starter

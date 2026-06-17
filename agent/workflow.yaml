@@ -1,0 +1,111 @@
+---
+# Copyright 2026 DataRobot, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+general:
+  telemetry:
+    tracing:
+      otelcollector:
+        _type: datarobot_otelcollector
+        project: agent
+  front_end:
+    _type: dragent_fastapi
+    # Step adaptor is not necessary for custom agents
+    step_adaptor:
+      mode: 'off'
+    # If you don't want your agent to expose A2A endpoints, remove the following block.
+    a2a:
+      server:
+        name: PFMEA Knowledge Search Agent
+        description: 製剤工場（固形製剤ライン）の PFMEA 情報資産を検索するエージェント。工程の不良現象に関する自然言語の質問に対し、
+          故障モード・影響・原因・現在の管理・推奨対策・リスク優先数(RPN)を含む関連レコードを根拠(record_id)付きで提示します。
+      skills:  # Optional: advertise specific skills in the agent card
+        - id: pfmea_search
+          name: PFMEA Knowledge Search
+          description: 質問文から工程・キーワード・RPN意図を検出し、関連する PFMEA レコードを検索して根拠付きで回答します。
+          tags: [pfmea, manufacturing, pharma, risk]
+          examples:
+            - 打錠工程で注意するべき不良現象は？
+            - 異物混入のリスクが高い工程はどこ？
+            - コーティングのムラを防ぐには？
+            - RPNが高い不良モードを教えて
+            # Optional: Okta cross-application access (XAA) authentication for this agent's A2A endpoints.
+            # Uncomment to advertise XAA requirements on the agent card. See docs/agent/agent2agent-auth.md.
+            # cross_application_access:
+            #   token_exchange:
+            #     trusted_issuer: "https://your-org.okta.com"
+            #     audience: "https://your-org.okta.com/oauth2/ausXXXXXXXXXXXXXXX"
+            #   token_request:
+            #     token_url: "https://your-org.okta.com/oauth2/ausXXXXXXXXXXXXXXX/v1/token"
+            #     audience: "https://example.com/agents/my-agent-id"
+            #     scopes:
+            #       - "dr.impersonation"
+            # Optional: external identity and URL overrides published on the agent card.
+            # external:
+            #   id: "my-agent-id"
+            #   url: "https://my-agent-id.example.com/a2a/"
+# To connect this agent to a remote A2A agent, uncomment the block below and add the
+# function group name to the workflow's tool_names list.
+# For Okta XAA auth, use auth_provider: okta_auth instead of datarobot_auth.
+# function_groups:
+#   remote_agent:
+#     _type: authenticated_a2a_client
+#     url: "https://app.datarobot.com/api/v2/deployments/<deployment-id>/directAccess/a2a/"
+#     auth_provider: datarobot_auth
+functions:
+  langgraph_agent:
+    _type: langgraph_agent
+    llm_name: datarobot_llm
+    description: 製剤工程 PFMEA ナレッジ検索エージェント（pfmea_search ツールを用いて関連レコードを検索し回答）
+    # tool_names:
+    #   - remote_agent
+llms:
+  datarobot_llm:
+    _type: datarobot-llm-component
+    # To enable LLM provider fallback/failover, remove the datarobot_llm block above and uncomment the following:
+    # datarobot_llm:
+    #   _type: datarobot-llm-router
+    #   primary:
+    #     use_datarobot_llm_gateway: true
+    #     llm_default_model: azure/gpt-5-mini-2025-08-07
+    #   fallbacks:
+    #     - use_datarobot_llm_gateway: true
+    #       llm_default_model: anthropic/claude-opus-4-20250514
+    #   num_retries: 1
+memory:
+  mem0_memory:
+    _type: dr_mem0_memory
+workflow:
+  # When memory is not configured streaming_memory_agent is a passthrough so it is safe to use
+  # unconditionally. To configure memory choose agent memory provider "Mem0" and set MEM0_API_KEY
+  # in .env or choose agent memory provider "Datarobot Memory Service" and AGENT_MEMORY_SPACE_ID
+  # will be created during `task deploy-dev`.
+  _type: streaming_memory_agent
+  inner_agent_name: langgraph_agent
+  memory_name: mem0_memory
+  llm_name: datarobot_llm
+  description: 製剤工程 PFMEA ナレッジ検索エージェント（メモリの自動記録・参照付き）
+  middleware: [datarobot_moderation]
+middleware:
+  datarobot_moderation:
+    # Guards can be configured inline by adding the moderation field here.
+    # See the Guardrails Configuration Guide at https://pypi.org/project/datarobot-moderations/
+    # If there is no inline configuration then moderation_config.yaml will be loaded, if present.
+    # If no guards are configured then the middleware is a no-op.
+    _type: datarobot_moderation
+authentication:
+  datarobot_auth:
+    _type: datarobot_api_key
+  # Uncomment for Okta XAA authentication (requires IDP_AGENT_ID and IDP_AGENT_PRIVATE_KEY_JWK env vars):
+  # okta_auth:
+  #   _type: okta_cross_app_access

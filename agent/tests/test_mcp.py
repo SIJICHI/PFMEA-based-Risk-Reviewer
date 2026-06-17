@@ -1,0 +1,105 @@
+# Copyright 2026 DataRobot, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Copyright 2026 DataRobot, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""
+Tests for MCP LangGraph integration - verifying agents have MCP tools configured.
+"""
+
+import os
+from contextlib import asynccontextmanager
+from types import SimpleNamespace
+from typing import Any
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from agent import custompy_adaptor
+
+
+@asynccontextmanager
+async def _mock_mcp_tools_context(mcp_config):
+    yield []
+
+
+@pytest.fixture(autouse=True)
+def langgraph_common_mocks():
+    """
+    Autouse fixture that patches mcp_tools_context to return default mock tools:
+    - patches mcp_tools_context to return default mock tools
+    """
+
+    with (
+        patch(
+            "agent.myagent.mcp_tools_context", side_effect=_mock_mcp_tools_context
+        ) as mock_mcp_tools_context,
+        patch("agent.myagent.MyAgent") as mock_agent_class,
+        patch("agent.myagent.get_llm", return_value=MagicMock()),
+    ):
+
+        async def invoke(*args, **kwargs):
+            yield (
+                "agent result",
+                [],
+                {"completion_tokens": 1, "prompt_tokens": 2, "total_tokens": 3},
+            )
+
+        mock_agent = MagicMock()
+        mock_agent.invoke = invoke
+        mock_agent_class.return_value = mock_agent
+
+        yield SimpleNamespace(
+            mcp_tools_context=mock_mcp_tools_context,
+            agent=mock_agent,
+        )
+
+
+@pytest.fixture
+def chat_completion_params() -> dict[str, Any]:
+    return {
+        "model": "m",
+        "messages": [{"role": "user", "content": "test prompt"}],
+        "forwarded_props": dict(authorization_context={}, forwarded_headers={}),
+    }
+
+
+class TestMCPIntegration:
+    """Test MCP tool integration for LangGraph agents."""
+
+    async def test_agent_loads_mcp_tools_from_external_url_in_invoke(
+        self, langgraph_common_mocks, chat_completion_params
+    ):
+        """Test that agent loads MCP tools from EXTERNAL_MCP_URL when invoke() is called."""
+        mock_mcp_tools_context = langgraph_common_mocks.mcp_tools_context
+
+        test_url = "https://mcp-server.example.com/mcp"
+        with patch.dict(os.environ, {"EXTERNAL_MCP_URL": test_url}, clear=True):
+            # Call invoke - this should trigger MCP tool loading
+            await custompy_adaptor(chat_completion_params)
+
+            # Verify mcp_tools_context was called
+            mock_mcp_tools_context.assert_called_once()
