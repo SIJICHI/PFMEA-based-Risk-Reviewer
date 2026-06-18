@@ -246,6 +246,45 @@ def _format_record(record: dict[str, Any]) -> str:
     )
 
 
+def _risk_focus(record: dict[str, Any]) -> str:
+    """S/O/D から FMEA 上の着眼点（リスク低減の方向性）を決定的に導く。
+
+    厳しさ(S)が高い→影響度が大きく重大。発生度(O)が高い→発生予防が有効。
+    検出度(D)が高い→検出しにくく流出しやすいため検出強化が有効。
+    データに無い事実は作らず、S/O/D の数値から方向性のみを示す。
+    """
+    s = record.get("severity", 0) or 0
+    o = record.get("occurrence", 0) or 0
+    d = record.get("detection", 0) or 0
+    parts: list[str] = []
+    if s >= 8:
+        parts.append(f"影響度大・重大(S={s})")
+    # O と D のうち大きい方を主眼に（同値なら検出強化を優先表記）。
+    if d >= o:
+        parts.append(f"検出性の強化(D={d})")
+    else:
+        parts.append(f"発生の予防(O={o})")
+    return " / ".join(parts)
+
+
+def _risk_reduction_block(records: list[dict[str, Any]]) -> str:
+    """取得レコードの推奨対策を RPN 優先で集約した『リスク低減サマリー』。
+
+    各レコードの ``recommended_action`` を根拠 (record_id) 付きで列挙し、
+    S/O/D に基づく着眼点を併記する。内容はすべてレコード由来。
+    """
+    ranked = sorted(records, key=lambda r: r.get("rpn", 0), reverse=True)
+    lines = ["■ リスク低減のための推奨アクション（RPN優先）"]
+    for i, r in enumerate(ranked, start=1):
+        lines.append(
+            f"{i}. [{r['record_id']} / RPN{r.get('rpn')}] "
+            f"{r.get('failure_mode', '')}\n"
+            f"   → {r.get('recommended_action', '')}\n"
+            f"   （着眼: {_risk_focus(r)}）"
+        )
+    return "\n".join(lines)
+
+
 def search_as_text(query: str) -> str:
     """検索結果を LLM 向けの整形テキストにする (該当なし時は言い換え例を提示)。"""
     result = search(query)
@@ -278,7 +317,8 @@ def search_as_text(query: str) -> str:
         header = f"{scope}PFMEA レコードを関連度順に {len(records)} 件抽出しました。"
 
     body = "\n\n".join(_format_record(r) for r in records)
-    return f"{header}\n\n{body}"
+    risk_block = _risk_reduction_block(records)
+    return f"{header}\n\n{body}\n\n{risk_block}"
 
 
 @tool

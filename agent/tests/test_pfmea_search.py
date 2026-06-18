@@ -14,12 +14,14 @@
 """PFMEA 検索ロジックの単体テスト (SPEC 5 / 8 の動作確認シナリオ)。"""
 
 from agent.tools import (
+    _risk_focus,
     detect_process_id,
     detect_rpn_intent,
     extract_keywords,
     load_data,
     pfmea_search,
     search,
+    search_as_text,
 )
 
 
@@ -121,3 +123,35 @@ class TestToolFormatting:
         text = pfmea_search.invoke("今日の天気は？")
         assert "見つかりませんでした" in text
         assert "言い換え" in text
+
+
+class TestRiskReductionSummary:
+    def test_summary_present_and_grounded(self):
+        text = search_as_text("打錠工程で注意するべき不良現象は？")
+        # 専用の『リスク低減のための推奨アクション』セクションが付与される。
+        assert "■ リスク低減のための推奨アクション" in text
+        assert "着眼:" in text
+        # アクションは検索結果のレコードに基づく（record_id 付き）。
+        assert "[F06" in text
+
+    def test_summary_is_rpn_prioritized(self):
+        # サマリーは RPN 降順。最大 RPN の F0201 が先頭に来る。
+        text = search_as_text("RPNが高い不良モードを教えて")
+        block = text.split("■ リスク低減のための推奨アクション")[1]
+        assert block.lstrip().splitlines()[0].startswith("（") or "F0201" in block
+        assert "1. [F0201 / RPN160]" in block
+
+    def test_risk_focus_reflects_sod(self):
+        # 厳しさ大・検出度高の組合せが着眼点に反映される。
+        f0201 = next(
+            r for r in load_data()["fmea_records"] if r["record_id"] == "F0201"
+        )
+        focus = _risk_focus(f0201)  # S=8, O=4, D=5
+        assert "影響度大・重大(S=8)" in focus
+        assert "検出性の強化(D=5)" in focus
+
+    def test_risk_focus_occurrence_driven(self):
+        # 発生度 > 検出度 のとき発生予防が着眼点。
+        focus = _risk_focus({"severity": 3, "occurrence": 5, "detection": 2})
+        assert "発生の予防(O=5)" in focus
+        assert "影響度大" not in focus  # S<8
