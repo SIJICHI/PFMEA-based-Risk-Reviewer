@@ -106,7 +106,8 @@ export const MARKDOWN_COMPONENTS: Components = {
     <td
       className={cn(
         `
-          border-r border-b border-border bg-background p-3 pl-2 text-left leading-5 text-ellipsis whitespace-nowrap
+          border-r border-b border-border bg-background p-3 pl-2 text-left leading-5 align-top whitespace-normal
+          break-words
           last:border-r-0
           [tr:last-child_&]:border-b-0
         `,
