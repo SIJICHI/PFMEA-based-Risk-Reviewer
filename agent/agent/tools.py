@@ -114,6 +114,30 @@ _GENERIC_TERMS = [
     "ランキング",
     "上位",
     "一覧",
+    # 対策の実施状況・進捗を表す語もトピック扱いしない（状況フィルタ側で処理）。
+    "高リスク",
+    "対策",
+    "対応",
+    "アクション",
+    "施策",
+    "状況",
+    "進捗",
+    "未着手",
+    "計画中",
+    "実施中",
+    "完了",
+    "見送り",
+    "未対策",
+    "未実施",
+    "未完了",
+    "対策済",
+    "対応済",
+    "実施済",
+    "残存",
+    "残ってい",
+    "打たれてい",
+    "手つかず",
+    "積み残",
 ]
 
 # スコアリング重み (SPEC 5.3)。
@@ -196,6 +220,30 @@ def detect_rpn_intent(text: str) -> bool:
     return bool(_RPN_INTENT_RE.search(text))
 
 
+# 対策の実施状況フィルタ: 質問の語から対象ステータス集合を判定する。
+_STATUS_PATTERNS: list[tuple[tuple[str, ...], str]] = [
+    (
+        ("未着手", "計画中"),
+        r"未着手|未対策|未実施|未完了|打たれてい|手つかず|残存|残ってい|積み残",
+    ),
+    (("実施中",), r"実施中|対応中|進行中|進捗|途中"),
+    (("完了",), r"完了|対応済|実施済|対策済|済んだ"),
+    (("見送り",), r"見送り|却下|見合わせ|保留"),
+]
+
+
+def detect_status_filter(query: str) -> set[str] | None:
+    """質問から対象の対策実施状況の集合を判定する（無ければ None）。
+
+    例:「未対策の高リスクは？」→ {未着手, 計画中}、「実施中の対策は？」→ {実施中}。
+    """
+    matched: set[str] = set()
+    for statuses, pattern in _STATUS_PATTERNS:
+        if re.search(pattern, query):
+            matched.update(statuses)
+    return matched or None
+
+
 def score_record(
     record: dict[str, Any], keywords: list[str], process_id: str | None
 ) -> int:
@@ -227,38 +275,51 @@ def score_record(
     return score
 
 
+def _narrow_pool(
+    pool: list[dict[str, Any]], query: str, process_id: str | None
+) -> list[dict[str, Any]]:
+    """工程指定があれば工程で、無ければトピック語で母集団を絞る。
+
+    トピック語が無い、または該当が無い場合は素通し（全体を維持）する。
+    """
+    if process_id:
+        return [r for r in pool if r.get("process_id") == process_id]
+    topic_kw = _topic_keywords(query)
+    if topic_kw:
+        topic_pool = [r for r in pool if score_record(r, topic_kw, None) > 0]
+        if topic_pool:
+            return topic_pool
+    return pool
+
+
 def search(query: str) -> dict[str, Any]:
-    """質問文に対して PFMEA レコードを検索する (SPEC 5.3)。
+    """質問文に対して PFMEA レコードを検索する (SPEC 5.3 + 対策実施状況)。
 
     Returns:
         以下のキーを持つ dict:
-        * ``mode``: "rpn" (RPN 降順) または "relevance" (関連度順)
+        * ``mode``: "status"(実施状況) / "rpn"(RPN降順) / "relevance"(関連度順)
         * ``process_id`` / ``process_name``: 検出された工程 (なければ None)
+        * ``status_filter``: 実施状況モード時の対象ステータス (なければ None)
         * ``records``: 上位レコードのリスト (最大 ``MAX_RESULTS`` 件)
     """
     records = load_data()["fmea_records"]
     keywords = extract_keywords(query)
     process_id = detect_process_id(query)
     rpn_intent = detect_rpn_intent(query)
+    status_filter = detect_status_filter(query)
     proc_index = _process_index()
 
-    if rpn_intent:
-        # RPN 重視モード。
-        if process_id:
-            # 工程指定があればその工程内を RPN 降順（工程スコープが意図）。
-            pool = [r for r in records if r.get("process_id") == process_id]
-        else:
-            # 工程指定が無い場合: トピック語（異物混入 等）があればそれで絞ってから
-            # RPN 降順。トピック語が無い純粋なランキング質問
-            # （例:「RPNが高い不良モード」）は全体を対象にする。
-            pool = records
-            topic_kw = _topic_keywords(query)
-            if topic_kw:
-                topic_pool = [r for r in pool if score_record(r, topic_kw, None) > 0]
-                if topic_pool:
-                    pool = topic_pool
-        ranked = sorted(pool, key=lambda r: r.get("rpn", 0), reverse=True)
-        top = ranked[:MAX_RESULTS]
+    if status_filter:
+        # 実施状況モード: 指定ステータスに絞り、工程/トピックで narrow し RPN 降順。
+        # 「未対策の高リスク」「実施中の対策」等の進捗・残存リスク管理に対応。
+        pool = [r for r in records if r.get("action_status") in status_filter]
+        pool = _narrow_pool(pool, query, process_id)
+        top = sorted(pool, key=lambda r: r.get("rpn", 0), reverse=True)[:MAX_RESULTS]
+        mode = "status"
+    elif rpn_intent:
+        # RPN 重視モード。工程指定→工程内、無ければトピックで絞ってから RPN 降順。
+        pool = _narrow_pool(records, query, process_id)
+        top = sorted(pool, key=lambda r: r.get("rpn", 0), reverse=True)[:MAX_RESULTS]
         mode = "rpn"
     else:
         scored = [(r, score_record(r, keywords, process_id)) for r in records]
@@ -273,8 +334,32 @@ def search(query: str) -> dict[str, Any]:
         "mode": mode,
         "process_id": process_id,
         "process_name": process["process_name"] if process else None,
+        "status_filter": sorted(status_filter) if status_filter else None,
         "records": top,
     }
+
+
+def _action_status_line(record: dict[str, Any]) -> str:
+    """実施状況（担当・期限/完了日）の1行表記。データが無ければ空文字。"""
+    status = record.get("action_status")
+    if not status:
+        return ""
+    owner = record.get("action_owner", "—")
+    done = record.get("action_done_date")
+    when = f"完了日: {done}" if done else f"期限: {record.get('action_due') or '—'}"
+    return f"\n  実施状況: {status}（担当: {owner} / {when}）"
+
+
+def _post_rpn_line(record: dict[str, Any]) -> str:
+    """対策後の想定RPN（before→after）の1行表記。データが無ければ空文字。"""
+    post = record.get("post_rpn")
+    if post is None:
+        return ""
+    return (
+        f"\n  対策後の想定: RPN {record.get('rpn')} → {post}"
+        f"（S{record.get('post_severity')}/O{record.get('post_occurrence')}"
+        f"/D{record.get('post_detection')}）"
+    )
 
 
 def _format_record(record: dict[str, Any]) -> str:
@@ -293,6 +378,8 @@ def _format_record(record: dict[str, Any]) -> str:
         f"検出度(D): {record.get('detection')} / RPN: {record.get('rpn')}\n"
         f"  現在の管理: {record.get('current_control', '')}\n"
         f"  推奨対策: {record.get('recommended_action', '')}"
+        f"{_action_status_line(record)}"
+        f"{_post_rpn_line(record)}"
     )
 
 
@@ -326,11 +413,23 @@ def _risk_reduction_block(records: list[dict[str, Any]]) -> str:
     ranked = sorted(records, key=lambda r: r.get("rpn", 0), reverse=True)
     lines = ["■ リスク低減のための推奨アクション（RPN優先）"]
     for i, r in enumerate(ranked, start=1):
+        post = r.get("post_rpn")
+        rpn_str = f"RPN{r.get('rpn')}" + (f"→{post}" if post is not None else "")
+        status = r.get("action_status")
+        status_str = f" 〈{status}〉" if status else ""
+        meta: list[str] = []
+        if r.get("action_owner"):
+            meta.append(f"担当: {r['action_owner']}")
+        done = r.get("action_done_date")
+        due = done or r.get("action_due")
+        if due:
+            meta.append(("完了" if done else "期限") + f": {due}")
+        meta_str = (" ／ " + "・".join(meta)) if meta else ""
         lines.append(
-            f"{i}. [{r['record_id']} / RPN{r.get('rpn')}] "
+            f"{i}. [{r['record_id']} / {rpn_str}]{status_str} "
             f"{r.get('failure_mode', '')}\n"
             f"   → {r.get('recommended_action', '')}\n"
-            f"   （着眼: {_risk_focus(r)}）"
+            f"   （着眼: {_risk_focus(r)}{meta_str}）"
         )
     return "\n".join(lines)
 
@@ -353,7 +452,14 @@ def search_as_text(query: str) -> str:
             "  - 「RPNが高い不良モードを教えて」"
         )
 
-    if result["mode"] == "rpn":
+    if result["mode"] == "status":
+        labels = "・".join(result.get("status_filter") or [])
+        scope = f"{result['process_name']}工程の" if result["process_name"] else ""
+        header = (
+            f"{scope}対策状況『{labels}』の PFMEA レコードを RPN 降順で "
+            f"{len(records)} 件抽出しました。"
+        )
+    elif result["mode"] == "rpn":
         scope = (
             f"{result['process_name']}工程の" if result["process_name"] else "全工程の"
         )
@@ -376,15 +482,18 @@ def pfmea_search(query: str) -> str:
     """製剤工程の PFMEA 情報資産から、質問に関連する故障モード・影響・原因・
     現在の管理・推奨対策・リスク優先数(RPN)を含むレコードを検索する。
 
-    工程の不良現象、リスク、対策に関する質問にはこのツールを必ず使用すること。
+    各レコードには対策の実施状況（未着手/計画中/実施中/完了/見送り・担当・期限）と
+    対策後の想定RPNも含まれる。工程の不良現象・リスク・対策・その進捗や残存リスクに
+    関する質問にはこのツールを必ず使用すること。
     例:「打錠工程で注意すべき不良現象は？」「異物混入のリスクが高い工程は？」
-    「RPNが高い不良モードを教えて」。
+    「RPNが高い不良モードを教えて」「まだ対策が打たれていない高リスクは？」
+    「実施中の対策は？」。
 
     Args:
         query: 利用者の自然言語の質問文（日本語）。
 
     Returns:
-        関連 PFMEA レコードを record_id 付きで整形したテキスト。該当が無い
-        場合は言い換え例を含む案内文を返す。
+        関連 PFMEA レコードを record_id・実施状況・対策後想定RPN 付きで整形した
+        テキスト。該当が無い場合は言い換え例を含む案内文を返す。
     """
     return search_as_text(query)

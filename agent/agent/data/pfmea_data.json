@@ -4,7 +4,7 @@
     "line": "固形製剤（錠剤）製造ライン A棟2階",
     "version": "Rev.3",
     "last_updated": "2026-04-10",
-    "note": "本データは技術検討用に作成した架空のサンプルであり、実在の製造ラインの情報ではありません。"
+    "note": "本データは技術検討用に作成した架空のサンプルであり、実在の製造ラインの情報ではありません。 対策の実施状況・対策後想定RPNは検討用の仮値です。"
   },
   "processes": [
     {
@@ -97,7 +97,23 @@
       "detection": 4,
       "rpn": 96,
       "recommended_action": "計量データの自動記録システム（天秤と処方データの自動照合）導入",
-      "keywords": ["秤量", "計量", "含量", "天秤", "校正", "ヒューマンエラー", "処方量"]
+      "keywords": [
+        "秤量",
+        "計量",
+        "含量",
+        "天秤",
+        "校正",
+        "ヒューマンエラー",
+        "処方量"
+      ],
+      "action_status": "実施中",
+      "action_owner": "製剤一課",
+      "action_due": "2026-09-30",
+      "action_done_date": null,
+      "post_severity": 8,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 48
     },
     {
       "record_id": "F0103",
@@ -116,7 +132,22 @@
       "detection": 2,
       "rpn": 36,
       "recommended_action": "原料保管棚のロケーション管理とバーコード照合の連動強化",
-      "keywords": ["取り違え", "原料", "誤投入", "バーコード", "ラベル", "類似名称"]
+      "keywords": [
+        "取り違え",
+        "原料",
+        "誤投入",
+        "バーコード",
+        "ラベル",
+        "類似名称"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤一課",
+      "action_due": "2026-01-20",
+      "action_done_date": "2026-01-20",
+      "post_severity": 9,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 18
     },
     {
       "record_id": "F0104",
@@ -135,7 +166,22 @@
       "detection": 4,
       "rpn": 60,
       "recommended_action": "温湿度アラートの自動通知システム導入",
-      "keywords": ["保管", "吸湿", "変質", "温湿度", "待機時間", "劣化"]
+      "keywords": [
+        "保管",
+        "吸湿",
+        "変質",
+        "温湿度",
+        "待機時間",
+        "劣化"
+      ],
+      "action_status": "未着手",
+      "action_owner": "製剤一課",
+      "action_due": "2026-09-30",
+      "action_done_date": null,
+      "post_severity": 5,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 30
     },
     {
       "record_id": "F0105",
@@ -154,7 +200,21 @@
       "detection": 2,
       "rpn": 28,
       "recommended_action": "使用期限のバーコード照合による自動チェック化",
-      "keywords": ["使用期限", "期限切れ", "FIFO", "在庫管理", "力価低下"]
+      "keywords": [
+        "使用期限",
+        "期限切れ",
+        "FIFO",
+        "在庫管理",
+        "力価低下"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤一課",
+      "action_due": "2026-03-25",
+      "action_done_date": "2026-03-25",
+      "post_severity": 7,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 14
     },
     {
       "record_id": "F0102",
@@ -173,7 +233,22 @@
       "detection": 5,
       "rpn": 90,
       "recommended_action": "金属探知機の計量工程への追加設置を検討",
-      "keywords": ["異物", "異物混入", "金属", "交差汚染", "洗浄", "コンタミ"]
+      "keywords": [
+        "異物",
+        "異物混入",
+        "金属",
+        "交差汚染",
+        "洗浄",
+        "コンタミ"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤一課",
+      "action_due": "2026-02-18",
+      "action_done_date": "2026-02-18",
+      "post_severity": 9,
+      "post_occurrence": 2,
+      "post_detection": 3,
+      "post_rpn": 54
     },
     {
       "record_id": "F0201",
@@ -193,7 +268,22 @@
       "detection": 5,
       "rpn": 160,
       "recommended_action": "混合終点をNIR（近赤外分光）でリアルタイム監視する仕組みの導入",
-      "keywords": ["混合", "偏析", "含量均一性", "ミキサー", "攪拌", "投入順序"]
+      "keywords": [
+        "混合",
+        "偏析",
+        "含量均一性",
+        "ミキサー",
+        "攪拌",
+        "投入順序"
+      ],
+      "action_status": "未着手",
+      "action_owner": "製剤一課",
+      "action_due": "2026-11-30",
+      "action_done_date": null,
+      "post_severity": 8,
+      "post_occurrence": 4,
+      "post_detection": 3,
+      "post_rpn": 96
     },
     {
       "record_id": "F0202",
@@ -211,7 +301,22 @@
       "detection": 4,
       "rpn": 72,
       "recommended_action": "シール部品の交換サイクルを使用時間ベースで管理するシステムの導入",
-      "keywords": ["異物", "混合機", "破損", "摩耗", "点検", "シール"]
+      "keywords": [
+        "異物",
+        "混合機",
+        "破損",
+        "摩耗",
+        "点検",
+        "シール"
+      ],
+      "action_status": "計画中",
+      "action_owner": "製剤一課",
+      "action_due": "2026-12-31",
+      "action_done_date": null,
+      "post_severity": 9,
+      "post_occurrence": 2,
+      "post_detection": 2,
+      "post_rpn": 36
     },
     {
       "record_id": "F0203",
@@ -230,7 +335,21 @@
       "detection": 5,
       "rpn": 60,
       "recommended_action": "新人オペレーター向けの操作トレーニング動画の整備",
-      "keywords": ["処理時間", "サイクルタイム", "遅延", "生産性", "操作習熟度"]
+      "keywords": [
+        "処理時間",
+        "サイクルタイム",
+        "遅延",
+        "生産性",
+        "操作習熟度"
+      ],
+      "action_status": "実施中",
+      "action_owner": "製剤一課",
+      "action_due": "2026-07-31",
+      "action_done_date": null,
+      "post_severity": 3,
+      "post_occurrence": 4,
+      "post_detection": 3,
+      "post_rpn": 36
     },
     {
       "record_id": "F0204",
@@ -249,7 +368,21 @@
       "detection": 4,
       "rpn": 48,
       "recommended_action": "イオナイザー（除電装置）の導入検討",
-      "keywords": ["静電気", "付着", "凝集", "帯電", "歩留り"]
+      "keywords": [
+        "静電気",
+        "付着",
+        "凝集",
+        "帯電",
+        "歩留り"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤一課",
+      "action_due": "2026-05-12",
+      "action_done_date": "2026-05-12",
+      "post_severity": 4,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 24
     },
     {
       "record_id": "F0205",
@@ -268,7 +401,21 @@
       "detection": 2,
       "rpn": 36,
       "recommended_action": "洗浄完了の判定基準を定量化し記録の電子化を進める",
-      "keywords": ["交差汚染", "洗浄不良", "持ち込み", "洗浄バリデーション", "ふき取り検査"]
+      "keywords": [
+        "交差汚染",
+        "洗浄不良",
+        "持ち込み",
+        "洗浄バリデーション",
+        "ふき取り検査"
+      ],
+      "action_status": "見送り",
+      "action_owner": "製剤一課",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 9,
+      "post_occurrence": 2,
+      "post_detection": 2,
+      "post_rpn": 36
     },
     {
       "record_id": "F0301",
@@ -288,7 +435,22 @@
       "detection": 3,
       "rpn": 72,
       "recommended_action": "造粒終点判定にトルクセンサーを追加し検出感度を向上",
-      "keywords": ["造粒", "過造粒", "粗大化", "噴霧", "流動性", "顆粒"]
+      "keywords": [
+        "造粒",
+        "過造粒",
+        "粗大化",
+        "噴霧",
+        "流動性",
+        "顆粒"
+      ],
+      "action_status": "実施中",
+      "action_owner": "製剤一課",
+      "action_due": "2026-10-31",
+      "action_done_date": null,
+      "post_severity": 6,
+      "post_occurrence": 2,
+      "post_detection": 3,
+      "post_rpn": 36
     },
     {
       "record_id": "F0302",
@@ -307,7 +469,21 @@
       "detection": 4,
       "rpn": 72,
       "recommended_action": "結合剤噴霧ポンプの流量校正頻度の見直し",
-      "keywords": ["造粒不足", "微粉", "粉立ち", "結合剤", "濡れ不足"]
+      "keywords": [
+        "造粒不足",
+        "微粉",
+        "粉立ち",
+        "結合剤",
+        "濡れ不足"
+      ],
+      "action_status": "計画中",
+      "action_owner": "製剤一課",
+      "action_due": "2026-11-30",
+      "action_done_date": null,
+      "post_severity": 6,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 36
     },
     {
       "record_id": "F0303",
@@ -326,7 +502,21 @@
       "detection": 4,
       "rpn": 60,
       "recommended_action": "流動層内の温度分布センサーの増設によるデッドスポット検知",
-      "keywords": ["ダマ", "凝集塊", "目詰まり", "流動不良", "篩網"]
+      "keywords": [
+        "ダマ",
+        "凝集塊",
+        "目詰まり",
+        "流動不良",
+        "篩網"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤一課",
+      "action_due": "2026-04-15",
+      "action_done_date": "2026-04-15",
+      "post_severity": 5,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 30
     },
     {
       "record_id": "F0304",
@@ -344,7 +534,21 @@
       "detection": 3,
       "rpn": 42,
       "recommended_action": "フィルター差圧の異常値アラート機能の追加",
-      "keywords": ["フィルター", "破損", "漏出", "異物混入", "差圧"]
+      "keywords": [
+        "フィルター",
+        "破損",
+        "漏出",
+        "異物混入",
+        "差圧"
+      ],
+      "action_status": "見送り",
+      "action_owner": "製剤一課",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 7,
+      "post_occurrence": 2,
+      "post_detection": 3,
+      "post_rpn": 42
     },
     {
       "record_id": "F0401",
@@ -363,7 +567,22 @@
       "detection": 3,
       "rpn": 45,
       "recommended_action": "水分終点のオンライン水分計（NIR）による自動制御化",
-      "keywords": ["乾燥", "過乾燥", "水分", "硬度", "崩壊性", "LOD"]
+      "keywords": [
+        "乾燥",
+        "過乾燥",
+        "水分",
+        "硬度",
+        "崩壊性",
+        "LOD"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤一課",
+      "action_due": "2026-03-25",
+      "action_done_date": "2026-03-25",
+      "post_severity": 5,
+      "post_occurrence": 3,
+      "post_detection": 1,
+      "post_rpn": 15
     },
     {
       "record_id": "F0402",
@@ -382,7 +601,21 @@
       "detection": 3,
       "rpn": 54,
       "recommended_action": "フィルター差圧モニタリングによる目詰まり早期検知",
-      "keywords": ["乾燥不足", "水分", "スティッキング", "付着", "フィルター"]
+      "keywords": [
+        "乾燥不足",
+        "水分",
+        "スティッキング",
+        "付着",
+        "フィルター"
+      ],
+      "action_status": "計画中",
+      "action_owner": "製剤一課",
+      "action_due": "2027-01-31",
+      "action_done_date": null,
+      "post_severity": 6,
+      "post_occurrence": 3,
+      "post_detection": 1,
+      "post_rpn": 18
     },
     {
       "record_id": "F0403",
@@ -400,7 +633,21 @@
       "detection": 3,
       "rpn": 42,
       "recommended_action": "温度センサーの二重化（バックアップセンサー設置）",
-      "keywords": ["熱劣化", "温度異常", "分解", "力価低下", "センサー"]
+      "keywords": [
+        "熱劣化",
+        "温度異常",
+        "分解",
+        "力価低下",
+        "センサー"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤一課",
+      "action_due": "2026-02-18",
+      "action_done_date": "2026-02-18",
+      "post_severity": 7,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 14
     },
     {
       "record_id": "F0404",
@@ -419,7 +666,20 @@
       "detection": 4,
       "rpn": 60,
       "recommended_action": "オンライン水分計を複数箇所に設置し分布を可視化",
-      "keywords": ["水分ばらつき", "不均一", "サンプリング", "硬度偏差"]
+      "keywords": [
+        "水分ばらつき",
+        "不均一",
+        "サンプリング",
+        "硬度偏差"
+      ],
+      "action_status": "未着手",
+      "action_owner": "製剤一課",
+      "action_due": "2026-10-31",
+      "action_done_date": null,
+      "post_severity": 5,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 30
     },
     {
       "record_id": "F0405",
@@ -438,7 +698,21 @@
       "detection": 4,
       "rpn": 36,
       "recommended_action": "除電バーの設置検討",
-      "keywords": ["静電気", "微粉", "フィルター付着", "収率低下", "除電"]
+      "keywords": [
+        "静電気",
+        "微粉",
+        "フィルター付着",
+        "収率低下",
+        "除電"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤一課",
+      "action_due": "2026-02-18",
+      "action_done_date": "2026-02-18",
+      "post_severity": 3,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 18
     },
     {
       "record_id": "F0501",
@@ -457,7 +731,22 @@
       "detection": 4,
       "rpn": 60,
       "recommended_action": "篩網の使用回数管理による定期交換ルールの設定",
-      "keywords": ["整粒", "粒度", "篩", "メッシュ", "重量偏差", "充填不良"]
+      "keywords": [
+        "整粒",
+        "粒度",
+        "篩",
+        "メッシュ",
+        "重量偏差",
+        "充填不良"
+      ],
+      "action_status": "未着手",
+      "action_owner": "製剤一課",
+      "action_due": "2026-12-31",
+      "action_done_date": null,
+      "post_severity": 5,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 30
     },
     {
       "record_id": "F0502",
@@ -475,7 +764,22 @@
       "detection": 3,
       "rpn": 48,
       "recommended_action": "篩網の交換基準（使用時間）を明確化し記録管理",
-      "keywords": ["整粒機", "金属", "異物", "摩耗", "篩網", "断線"]
+      "keywords": [
+        "整粒機",
+        "金属",
+        "異物",
+        "摩耗",
+        "篩網",
+        "断線"
+      ],
+      "action_status": "見送り",
+      "action_owner": "製剤一課",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 8,
+      "post_occurrence": 2,
+      "post_detection": 3,
+      "post_rpn": 48
     },
     {
       "record_id": "F0503",
@@ -493,7 +797,21 @@
       "detection": 4,
       "rpn": 48,
       "recommended_action": "回転速度と投入量の標準作業条件の見直し",
-      "keywords": ["発熱", "摩擦", "物性変化", "圧縮性", "回転速度"]
+      "keywords": [
+        "発熱",
+        "摩擦",
+        "物性変化",
+        "圧縮性",
+        "回転速度"
+      ],
+      "action_status": "計画中",
+      "action_owner": "製剤一課",
+      "action_due": "2026-11-30",
+      "action_done_date": null,
+      "post_severity": 4,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 24
     },
     {
       "record_id": "F0504",
@@ -512,7 +830,21 @@
       "detection": 5,
       "rpn": 60,
       "recommended_action": "篩網の自動清掃機構（振動・エア吹き）の導入検討",
-      "keywords": ["目詰まり", "処理速度", "篩網", "清掃", "生産計画"]
+      "keywords": [
+        "目詰まり",
+        "処理速度",
+        "篩網",
+        "清掃",
+        "生産計画"
+      ],
+      "action_status": "実施中",
+      "action_owner": "製剤一課",
+      "action_due": "2026-09-30",
+      "action_done_date": null,
+      "post_severity": 3,
+      "post_occurrence": 4,
+      "post_detection": 3,
+      "post_rpn": 36
     },
     {
       "record_id": "F0601",
@@ -532,7 +864,23 @@
       "detection": 2,
       "rpn": 64,
       "recommended_action": "ホッパー内のブリッジング防止のためバイブレーター設置を検討",
-      "keywords": ["打錠", "重量偏差", "重量", "ブリッジング", "臼", "杵", "流動性"]
+      "keywords": [
+        "打錠",
+        "重量偏差",
+        "重量",
+        "ブリッジング",
+        "臼",
+        "杵",
+        "流動性"
+      ],
+      "action_status": "実施中",
+      "action_owner": "製剤二課",
+      "action_due": "2026-07-31",
+      "action_done_date": null,
+      "post_severity": 8,
+      "post_occurrence": 2,
+      "post_detection": 2,
+      "post_rpn": 32
     },
     {
       "record_id": "F0602",
@@ -552,7 +900,23 @@
       "detection": 4,
       "rpn": 96,
       "recommended_action": "予圧（プレコンプレッション）機構の圧力設定見直し",
-      "keywords": ["キャッピング", "ラミネーション", "層状剥離", "打錠圧", "杵", "外観不良", "脱気"]
+      "keywords": [
+        "キャッピング",
+        "ラミネーション",
+        "層状剥離",
+        "打錠圧",
+        "杵",
+        "外観不良",
+        "脱気"
+      ],
+      "action_status": "実施中",
+      "action_owner": "製剤二課",
+      "action_due": "2026-11-30",
+      "action_done_date": null,
+      "post_severity": 6,
+      "post_occurrence": 4,
+      "post_detection": 2,
+      "post_rpn": 48
     },
     {
       "record_id": "F0603",
@@ -571,7 +935,22 @@
       "detection": 3,
       "rpn": 63,
       "recommended_action": "硬度測定頻度の見直し（重量測定と連動した抜取強化）",
-      "keywords": ["硬度", "硬度不足", "崩壊性", "欠け", "割れ", "打錠圧"]
+      "keywords": [
+        "硬度",
+        "硬度不足",
+        "崩壊性",
+        "欠け",
+        "割れ",
+        "打錠圧"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤二課",
+      "action_due": "2026-02-18",
+      "action_done_date": "2026-02-18",
+      "post_severity": 7,
+      "post_occurrence": 3,
+      "post_detection": 1,
+      "post_rpn": 21
     },
     {
       "record_id": "F0604",
@@ -589,7 +968,22 @@
       "detection": 3,
       "rpn": 54,
       "recommended_action": "杵・臼の交換サイクルの短縮検討（使用回数ベース管理）",
-      "keywords": ["黒点", "異物", "金属", "杵", "臼", "かじり"]
+      "keywords": [
+        "黒点",
+        "異物",
+        "金属",
+        "杵",
+        "臼",
+        "かじり"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤二課",
+      "action_due": "2026-05-12",
+      "action_done_date": "2026-05-12",
+      "post_severity": 9,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 18
     },
     {
       "record_id": "F0605",
@@ -609,7 +1003,22 @@
       "detection": 4,
       "rpn": 96,
       "recommended_action": "外部滑沢方式（杵表面への直接滑沢剤噴霧）の導入検討",
-      "keywords": ["スティッキング", "付着", "杵", "刻印", "湿度", "外部滑沢"]
+      "keywords": [
+        "スティッキング",
+        "付着",
+        "杵",
+        "刻印",
+        "湿度",
+        "外部滑沢"
+      ],
+      "action_status": "実施中",
+      "action_owner": "製剤二課",
+      "action_due": "2026-09-30",
+      "action_done_date": null,
+      "post_severity": 6,
+      "post_occurrence": 4,
+      "post_detection": 2,
+      "post_rpn": 48
     },
     {
       "record_id": "F0606",
@@ -628,7 +1037,21 @@
       "detection": 4,
       "rpn": 60,
       "recommended_action": "臼内壁の表面処理（コーティング臼）への切替検討",
-      "keywords": ["バインディング", "引っ掻き傷", "臼", "摩擦", "摩損性"]
+      "keywords": [
+        "バインディング",
+        "引っ掻き傷",
+        "臼",
+        "摩擦",
+        "摩損性"
+      ],
+      "action_status": "未着手",
+      "action_owner": "製剤二課",
+      "action_due": "2026-12-31",
+      "action_done_date": null,
+      "post_severity": 5,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 30
     },
     {
       "record_id": "F0607",
@@ -647,7 +1070,21 @@
       "detection": 5,
       "rpn": 60,
       "recommended_action": "停止要因の自動分類とダッシュボード化による傾向分析",
-      "keywords": ["異常停止", "ブリッジング", "ライン停止", "センサー誤検知", "生産性"]
+      "keywords": [
+        "異常停止",
+        "ブリッジング",
+        "ライン停止",
+        "センサー誤検知",
+        "生産性"
+      ],
+      "action_status": "計画中",
+      "action_owner": "製剤二課",
+      "action_due": "2026-08-31",
+      "action_done_date": null,
+      "post_severity": 3,
+      "post_occurrence": 4,
+      "post_detection": 3,
+      "post_rpn": 36
     },
     {
       "record_id": "F0701",
@@ -667,7 +1104,22 @@
       "detection": 4,
       "rpn": 80,
       "recommended_action": "スプレーガンの自動洗浄・点検プログラムの導入",
-      "keywords": ["コーティング", "色調", "コートムラ", "スプレー", "噴霧", "外観不良"]
+      "keywords": [
+        "コーティング",
+        "色調",
+        "コートムラ",
+        "スプレー",
+        "噴霧",
+        "外観不良"
+      ],
+      "action_status": "計画中",
+      "action_owner": "製剤二課",
+      "action_due": "2026-07-31",
+      "action_done_date": null,
+      "post_severity": 5,
+      "post_occurrence": 4,
+      "post_detection": 2,
+      "post_rpn": 40
     },
     {
       "record_id": "F0702",
@@ -686,7 +1138,21 @@
       "detection": 4,
       "rpn": 60,
       "recommended_action": "パン回転速度と噴霧量の連動制御化",
-      "keywords": ["付着", "ツインング", "コーティング", "噴霧量", "乾燥風量"]
+      "keywords": [
+        "付着",
+        "ツインング",
+        "コーティング",
+        "噴霧量",
+        "乾燥風量"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤二課",
+      "action_due": "2025-12-15",
+      "action_done_date": "2025-12-15",
+      "post_severity": 5,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 30
     },
     {
       "record_id": "F0703",
@@ -705,7 +1171,21 @@
       "detection": 4,
       "rpn": 48,
       "recommended_action": "可塑剤配合比の見直しと小スケールでの事前検証強化",
-      "keywords": ["クラッキング", "ひび割れ", "可塑剤", "薬物放出", "乾燥速度"]
+      "keywords": [
+        "クラッキング",
+        "ひび割れ",
+        "可塑剤",
+        "薬物放出",
+        "乾燥速度"
+      ],
+      "action_status": "計画中",
+      "action_owner": "製剤二課",
+      "action_due": "2026-08-31",
+      "action_done_date": null,
+      "post_severity": 6,
+      "post_occurrence": 2,
+      "post_detection": 2,
+      "post_rpn": 24
     },
     {
       "record_id": "F0704",
@@ -724,7 +1204,22 @@
       "detection": 4,
       "rpn": 60,
       "recommended_action": "バッフル角度の最適化に関する小スケール試験の実施",
-      "keywords": ["衝突", "欠け", "割れ", "歩留り", "バッフル", "回転速度"]
+      "keywords": [
+        "衝突",
+        "欠け",
+        "割れ",
+        "歩留り",
+        "バッフル",
+        "回転速度"
+      ],
+      "action_status": "完了",
+      "action_owner": "製剤二課",
+      "action_due": "2026-04-15",
+      "action_done_date": "2026-04-15",
+      "post_severity": 5,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 30
     },
     {
       "record_id": "F0801",
@@ -743,7 +1238,22 @@
       "detection": 3,
       "rpn": 54,
       "recommended_action": "チャレンジテストの実施頻度を増やし記録を電子化",
-      "keywords": ["外観検査", "検出漏れ", "感度", "カメラ", "校正", "チャレンジテスト"]
+      "keywords": [
+        "外観検査",
+        "検出漏れ",
+        "感度",
+        "カメラ",
+        "校正",
+        "チャレンジテスト"
+      ],
+      "action_status": "計画中",
+      "action_owner": "品質保証部",
+      "action_due": "2026-12-31",
+      "action_done_date": null,
+      "post_severity": 9,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 18
     },
     {
       "record_id": "F0802",
@@ -762,7 +1272,21 @@
       "detection": 5,
       "rpn": 60,
       "recommended_action": "AI画像判定モデルへの更新による誤検出率の低減",
-      "keywords": ["過検出", "歩留り", "弾かれ", "しきい値", "誤検知"]
+      "keywords": [
+        "過検出",
+        "歩留り",
+        "弾かれ",
+        "しきい値",
+        "誤検知"
+      ],
+      "action_status": "未着手",
+      "action_owner": "品質保証部",
+      "action_due": "2026-07-31",
+      "action_done_date": null,
+      "post_severity": 3,
+      "post_occurrence": 4,
+      "post_detection": 3,
+      "post_rpn": 36
     },
     {
       "record_id": "F0803",
@@ -781,7 +1305,21 @@
       "detection": 4,
       "rpn": 48,
       "recommended_action": "搬送路の緩衝材追加による衝撃低減",
-      "keywords": ["搬送", "破損", "ベルト", "衝撃", "歩留り低下"]
+      "keywords": [
+        "搬送",
+        "破損",
+        "ベルト",
+        "衝撃",
+        "歩留り低下"
+      ],
+      "action_status": "見送り",
+      "action_owner": "品質保証部",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 4,
+      "post_occurrence": 3,
+      "post_detection": 4,
+      "post_rpn": 48
     },
     {
       "record_id": "F0804",
@@ -800,7 +1338,21 @@
       "detection": 3,
       "rpn": 63,
       "recommended_action": "照明・カメラの予防保守スケジュールの厳格化",
-      "keywords": ["カメラ", "照明", "経年劣化", "判定精度", "見逃し"]
+      "keywords": [
+        "カメラ",
+        "照明",
+        "経年劣化",
+        "判定精度",
+        "見逃し"
+      ],
+      "action_status": "実施中",
+      "action_owner": "品質保証部",
+      "action_due": "2026-07-31",
+      "action_done_date": null,
+      "post_severity": 7,
+      "post_occurrence": 3,
+      "post_detection": 1,
+      "post_rpn": 21
     },
     {
       "record_id": "F0805",
@@ -819,7 +1371,21 @@
       "detection": 3,
       "rpn": 36,
       "recommended_action": "仕分け機構の応答時間モニタリングとアラート機能の追加",
-      "keywords": ["振分け", "仕分け", "エラー", "混入", "同期不良"]
+      "keywords": [
+        "振分け",
+        "仕分け",
+        "エラー",
+        "混入",
+        "同期不良"
+      ],
+      "action_status": "計画中",
+      "action_owner": "品質保証部",
+      "action_due": "2026-12-31",
+      "action_done_date": null,
+      "post_severity": 6,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 12
     },
     {
       "record_id": "F0901",
@@ -838,7 +1404,22 @@
       "detection": 2,
       "rpn": 36,
       "recommended_action": "充填センサーの二重化（光学＋重量）による検出精度向上",
-      "keywords": ["充填", "空シート", "PTP", "ブリスター", "欠落", "供給不良"]
+      "keywords": [
+        "充填",
+        "空シート",
+        "PTP",
+        "ブリスター",
+        "欠落",
+        "供給不良"
+      ],
+      "action_status": "完了",
+      "action_owner": "包装課",
+      "action_due": "2026-03-25",
+      "action_done_date": "2026-03-25",
+      "post_severity": 9,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 18
     },
     {
       "record_id": "F0902",
@@ -857,7 +1438,22 @@
       "detection": 2,
       "rpn": 36,
       "recommended_action": "インク残量の自動アラート機能の追加",
-      "keywords": ["印字", "印字不良", "ロット番号", "有効期限", "OCR", "トレーサビリティ"]
+      "keywords": [
+        "印字",
+        "印字不良",
+        "ロット番号",
+        "有効期限",
+        "OCR",
+        "トレーサビリティ"
+      ],
+      "action_status": "完了",
+      "action_owner": "包装課",
+      "action_due": "2025-12-15",
+      "action_done_date": "2025-12-15",
+      "post_severity": 6,
+      "post_occurrence": 1,
+      "post_detection": 2,
+      "post_rpn": 12
     },
     {
       "record_id": "F0903",
@@ -876,7 +1472,21 @@
       "detection": 3,
       "rpn": 54,
       "recommended_action": "シール強度のインライン検査装置の導入検討",
-      "keywords": ["シール不良", "密封", "ピンホール", "防湿性", "アルミ箔"]
+      "keywords": [
+        "シール不良",
+        "密封",
+        "ピンホール",
+        "防湿性",
+        "アルミ箔"
+      ],
+      "action_status": "見送り",
+      "action_owner": "包装課",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 6,
+      "post_occurrence": 3,
+      "post_detection": 3,
+      "post_rpn": 54
     },
     {
       "record_id": "F0904",
@@ -894,7 +1504,21 @@
       "detection": 3,
       "rpn": 30,
       "recommended_action": "乾燥剤投入確認センサーの感度見直しと二重チェック化",
-      "keywords": ["乾燥剤", "瓶充填", "封入忘れ", "防湿性", "重量確認"]
+      "keywords": [
+        "乾燥剤",
+        "瓶充填",
+        "封入忘れ",
+        "防湿性",
+        "重量確認"
+      ],
+      "action_status": "完了",
+      "action_owner": "包装課",
+      "action_due": "2025-12-15",
+      "action_done_date": "2025-12-15",
+      "post_severity": 5,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 10
     },
     {
       "record_id": "F1001",
@@ -913,7 +1537,22 @@
       "detection": 2,
       "rpn": 40,
       "recommended_action": "梱包材バーコードと処方データの自動照合システム導入",
-      "keywords": ["異品種混入", "取り違え", "添付文書", "梱包", "ライン切替", "クリアランス"]
+      "keywords": [
+        "異品種混入",
+        "取り違え",
+        "添付文書",
+        "梱包",
+        "ライン切替",
+        "クリアランス"
+      ],
+      "action_status": "見送り",
+      "action_owner": "包装課",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 10,
+      "post_occurrence": 2,
+      "post_detection": 2,
+      "post_rpn": 40
     },
     {
       "record_id": "F1002",
@@ -932,7 +1571,21 @@
       "detection": 4,
       "rpn": 48,
       "recommended_action": "封函機の圧着温度の自動制御範囲の見直し",
-      "keywords": ["封函", "外箱", "破損", "梱包不良", "搬送"]
+      "keywords": [
+        "封函",
+        "外箱",
+        "破損",
+        "梱包不良",
+        "搬送"
+      ],
+      "action_status": "完了",
+      "action_owner": "包装課",
+      "action_due": "2026-03-25",
+      "action_done_date": "2026-03-25",
+      "post_severity": 4,
+      "post_occurrence": 3,
+      "post_detection": 2,
+      "post_rpn": 24
     },
     {
       "record_id": "F1003",
@@ -951,7 +1604,21 @@
       "detection": 2,
       "rpn": 28,
       "recommended_action": "印字データの一元管理システムへの統合",
-      "keywords": ["印字不一致", "ロット番号", "有効期限", "トレーサビリティ", "印字データ"]
+      "keywords": [
+        "印字不一致",
+        "ロット番号",
+        "有効期限",
+        "トレーサビリティ",
+        "印字データ"
+      ],
+      "action_status": "見送り",
+      "action_owner": "包装課",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 7,
+      "post_occurrence": 2,
+      "post_detection": 2,
+      "post_rpn": 28
     },
     {
       "record_id": "F1004",
@@ -970,7 +1637,21 @@
       "detection": 4,
       "rpn": 48,
       "recommended_action": "梱包数量の自動カウント＋重量検証のダブルチェック化",
-      "keywords": ["梱包数量", "過不足", "カウントミス", "出荷", "重量確認"]
+      "keywords": [
+        "梱包数量",
+        "過不足",
+        "カウントミス",
+        "出荷",
+        "重量確認"
+      ],
+      "action_status": "見送り",
+      "action_owner": "包装課",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 4,
+      "post_occurrence": 3,
+      "post_detection": 4,
+      "post_rpn": 48
     },
     {
       "record_id": "F1005",
@@ -989,7 +1670,21 @@
       "detection": 3,
       "rpn": 48,
       "recommended_action": "添付文書改訂通知から現場反映までのリードタイム短縮の仕組み化",
-      "keywords": ["添付文書", "旧版", "改訂", "封入ミス", "安全性情報"]
+      "keywords": [
+        "添付文書",
+        "旧版",
+        "改訂",
+        "封入ミス",
+        "安全性情報"
+      ],
+      "action_status": "計画中",
+      "action_owner": "包装課",
+      "action_due": "2026-08-31",
+      "action_done_date": null,
+      "post_severity": 8,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 16
     },
     {
       "record_id": "F1006",
@@ -1007,7 +1702,21 @@
       "detection": 5,
       "rpn": 40,
       "recommended_action": "外箱資材の受入検査基準（厚み・剛性）の強化",
-      "keywords": ["カートナー", "小停止", "ライン効率", "外箱品質", "生産性"]
+      "keywords": [
+        "カートナー",
+        "小停止",
+        "ライン効率",
+        "外箱品質",
+        "生産性"
+      ],
+      "action_status": "見送り",
+      "action_owner": "包装課",
+      "action_due": null,
+      "action_done_date": null,
+      "post_severity": 2,
+      "post_occurrence": 4,
+      "post_detection": 5,
+      "post_rpn": 40
     },
     {
       "record_id": "F1007",
@@ -1026,7 +1735,21 @@
       "detection": 3,
       "rpn": 30,
       "recommended_action": "温度ロガーの設置忘れ防止のためのチェックリスト電子化",
-      "keywords": ["保管環境", "温度逸脱", "出荷待機", "品質劣化", "温度ロガー"]
+      "keywords": [
+        "保管環境",
+        "温度逸脱",
+        "出荷待機",
+        "品質劣化",
+        "温度ロガー"
+      ],
+      "action_status": "完了",
+      "action_owner": "包装課",
+      "action_due": "2026-03-25",
+      "action_done_date": "2026-03-25",
+      "post_severity": 5,
+      "post_occurrence": 2,
+      "post_detection": 1,
+      "post_rpn": 10
     }
   ]
 }

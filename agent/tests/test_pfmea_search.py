@@ -17,6 +17,7 @@ from agent.tools import (
     _risk_focus,
     detect_process_id,
     detect_rpn_intent,
+    detect_status_filter,
     extract_keywords,
     load_data,
     pfmea_search,
@@ -138,6 +139,69 @@ class TestRpnTopicFiltering:
         result = search("打錠工程でRPNが高い不良は？")
         assert result["mode"] == "rpn"
         assert all(r["process_id"] == "P06" for r in result["records"])
+
+
+class TestActionStatus:
+    """対策の実施状況・対策後想定RPN（データ拡充）。"""
+
+    def test_records_have_status_fields(self):
+        for r in load_data()["fmea_records"]:
+            assert r["action_status"] in {
+                "未着手",
+                "計画中",
+                "実施中",
+                "完了",
+                "見送り",
+            }
+            assert isinstance(r["post_rpn"], int)
+            # 見送り以外は対策後RPNが現状以下（改善）になる。
+            if r["action_status"] != "見送り":
+                assert r["post_rpn"] <= r["rpn"]
+
+    def test_detect_status_filter(self):
+        assert detect_status_filter("まだ対策が打たれていない高リスクは？") == {
+            "未着手",
+            "計画中",
+        }
+        assert detect_status_filter("実施中の対策は？") == {"実施中"}
+        assert detect_status_filter("完了した対策を教えて") == {"完了"}
+        assert detect_status_filter("見送りになった対策は？") == {"見送り"}
+        assert detect_status_filter("打錠工程の不良は？") is None
+
+    def test_residual_risk_query(self):
+        # 未対策（未着手・計画中）の高リスクを RPN 降順で。最高RPN F0201 が先頭。
+        result = search("まだ対策が打たれていない高リスクは？")
+        assert result["mode"] == "status"
+        assert set(result["status_filter"]) == {"未着手", "計画中"}
+        assert all(
+            r["action_status"] in {"未着手", "計画中"} for r in result["records"]
+        )
+        rpns = [r["rpn"] for r in result["records"]]
+        assert rpns == sorted(rpns, reverse=True)
+        assert result["records"][0]["record_id"] == "F0201"
+
+    def test_in_progress_query(self):
+        result = search("実施中の対策は？")
+        assert result["mode"] == "status"
+        assert all(r["action_status"] == "実施中" for r in result["records"])
+
+    def test_output_includes_status_and_before_after(self):
+        text = search_as_text("まだ対策が打たれていない高リスクは？")
+        assert "対策状況『" in text
+        assert "実施状況:" in text
+        assert "対策後の想定:" in text
+
+    def test_status_query_with_topic_filters_by_topic(self):
+        # 状況 + トピック語。未対策かつ「異物混入」に関連するものへ絞られる
+        # （N-gram 部分一致のため 異物 または 混入 のいずれかに合致）。
+        result = search("未対策の異物混入リスクは？")
+        assert result["mode"] == "status"
+        assert all(
+            r["action_status"] in {"未着手", "計画中"} for r in result["records"]
+        )
+        for r in result["records"]:
+            text = r["failure_mode"] + " ".join(r.get("keywords", []))
+            assert "異物" in text or "混入" in text
 
 
 class TestResultLimit:
