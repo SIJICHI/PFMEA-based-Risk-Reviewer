@@ -236,7 +236,8 @@ class TestRiskReductionSummary:
         text = search_as_text("RPNが高い不良モードを教えて")
         block = text.split("■ リスク低減のための推奨アクション")[1]
         assert block.lstrip().splitlines()[0].startswith("（") or "F0201" in block
-        assert "1. [F0201 / RPN160]" in block
+        # 先頭(順位1)が最大RPNの F0201。RPNは現状→対策後を併記（例: RPN160→96）。
+        assert "1. [F0201 / RPN160" in block
 
     def test_risk_focus_reflects_sod(self):
         # 厳しさ大・検出度高の組合せが着眼点に反映される。
