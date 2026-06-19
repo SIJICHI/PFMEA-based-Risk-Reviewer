@@ -77,12 +77,21 @@ class TestSearchScenarios:
         assert result["records"][0]["process_id"] == "P06"
 
     def test_scenario2_foreign_matter_high_risk(self):
-        # 「リスクが高い」で RPN 意図が立つ。
+        # 「リスクが高い」で RPN 意図が立つが、トピック「異物混入」で絞ってから
+        # RPN 降順になること（無関係な高RPNレコードを返さない）。
         result = search("異物混入のリスクが高い工程はどこ？")
         assert result["mode"] == "rpn"
         assert len(result["records"]) > 0
         rpns = [r["rpn"] for r in result["records"]]
         assert rpns == sorted(rpns, reverse=True)
+        # 返却レコードはすべて「異物」に関連していること。
+        for r in result["records"]:
+            text = r["failure_mode"] + " ".join(r.get("keywords", []))
+            assert "異物" in text
+        # 異物混入は複数工程に跨るため、2工程以上が含まれること。
+        assert len({r["process_id"] for r in result["records"]}) >= 2
+        # トップは最大RPNの異物レコード F0102。
+        assert result["records"][0]["record_id"] == "F0102"
 
     def test_scenario3_coating_unevenness(self):
         result = search("コーティングのムラを防ぐには？")
@@ -105,6 +114,30 @@ class TestSearchScenarios:
         result = search("今日の東京の天気を教えて")
         assert result["mode"] == "relevance"
         assert result["records"] == []
+
+
+class TestRpnTopicFiltering:
+    """RPN モードでの『トピック絞り込み vs 全体ランキング』の切り分け。"""
+
+    def test_generic_ranking_stays_global(self):
+        # トピック語が無い純粋ランキング → 全体トップ（無関係でも高RPNが入る）。
+        result = search("RPNが高い不良モードを教えて")
+        ids = [r["record_id"] for r in result["records"]]
+        assert ids[0] == "F0201"
+        assert "F0101" in ids  # 異物以外の高RPNも含まれる＝全体ランキング
+
+    def test_topic_plus_rpn_filters_by_topic(self):
+        # トピック語あり → そのトピックで絞ってから RPN 降順。
+        result = search("異物混入のリスクが高い工程はどこ？")
+        for r in result["records"]:
+            text = r["failure_mode"] + " ".join(r.get("keywords", []))
+            assert "異物" in text
+
+    def test_process_plus_rpn_scopes_to_process(self):
+        # 工程指定 + RPN 意図 → その工程内で RPN 降順。
+        result = search("打錠工程でRPNが高い不良は？")
+        assert result["mode"] == "rpn"
+        assert all(r["process_id"] == "P06" for r in result["records"])
 
 
 class TestResultLimit:

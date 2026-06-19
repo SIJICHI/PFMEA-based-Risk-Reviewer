@@ -89,6 +89,33 @@ STOPWORDS: set[str] = {
     "います",
 }
 
+# RPN/ランキング意図や FMEA 一般語。RPN モードで「トピックによる絞り込み」を
+# 判定する際、これらは“話題”とみなさず除外する（例:「RPNが高い不良モード」は
+# 全体ランキング、「異物混入のリスクが高い工程」は異物混入で絞ってからRPN降順）。
+_GENERIC_TERMS = [
+    "rpn",
+    "リスク優先",
+    "優先度",
+    "優先",
+    "高い",
+    "重大",
+    "危険",
+    "重要",
+    "不良現象",
+    "不良モード",
+    "不良",
+    "故障モード",
+    "故障",
+    "モード",
+    "工程",
+    "リスク",
+    "教えて",
+    "どこ",
+    "ランキング",
+    "上位",
+    "一覧",
+]
+
 # スコアリング重み (SPEC 5.3)。
 _SCORE_HAYSTACK_HIT = 2  # レコード本文への部分一致
 _SCORE_KEYWORD_HIT = 3  # keywords フィールド一致は重み付けを高く
@@ -137,6 +164,19 @@ def extract_keywords(text: str) -> list[str]:
             seen.add(tok)
             result.append(tok)
     return result
+
+
+def _topic_keywords(query: str) -> list[str]:
+    """ランキング・FMEA 一般語を除いた“話題”キーワードを抽出する。
+
+    RPN モードで「全体ランキング質問」か「特定トピックの中での高RPN」かを
+    見分けるために使う。一般語を先に除去してから N-gram 化することで、
+    一般語の断片トークンが残らないようにする。
+    """
+    reduced = query.lower()
+    for g in _GENERIC_TERMS:
+        reduced = reduced.replace(g.lower(), " ")
+    return extract_keywords(reduced)
 
 
 def detect_process_id(text: str) -> str | None:
@@ -203,10 +243,20 @@ def search(query: str) -> dict[str, Any]:
     proc_index = _process_index()
 
     if rpn_intent:
-        # RPN 重視モード: 工程指定があればその工程内、なければ全体で RPN 降順。
-        pool = [
-            r for r in records if not process_id or r.get("process_id") == process_id
-        ]
+        # RPN 重視モード。
+        if process_id:
+            # 工程指定があればその工程内を RPN 降順（工程スコープが意図）。
+            pool = [r for r in records if r.get("process_id") == process_id]
+        else:
+            # 工程指定が無い場合: トピック語（異物混入 等）があればそれで絞ってから
+            # RPN 降順。トピック語が無い純粋なランキング質問
+            # （例:「RPNが高い不良モード」）は全体を対象にする。
+            pool = records
+            topic_kw = _topic_keywords(query)
+            if topic_kw:
+                topic_pool = [r for r in pool if score_record(r, topic_kw, None) > 0]
+                if topic_pool:
+                    pool = topic_pool
         ranked = sorted(pool, key=lambda r: r.get("rpn", 0), reverse=True)
         top = ranked[:MAX_RESULTS]
         mode = "rpn"
