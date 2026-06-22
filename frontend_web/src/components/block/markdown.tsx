@@ -83,6 +83,7 @@ export const MARKDOWN_COMPONENTS: MarkdownComponents = {
       <table
         className={cn(
           'h-fit w-full table-auto border-separate border-spacing-0 overflow-auto rounded-lg',
+          '[&_th:nth-child(2)]:whitespace-nowrap [&_td:nth-child(2)]:whitespace-nowrap',
           className
         )}
         {...props}
