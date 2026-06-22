@@ -68,7 +68,7 @@ export const MARKDOWN_COMPONENTS: Components = {
     <div className="my-2 flex flex-1 flex-col overflow-hidden rounded-lg border border-border bg-background">
       <table
         className={cn(
-          'h-fit w-full table-fixed border-separate border-spacing-0 overflow-auto rounded-lg',
+          'h-fit w-full table-auto border-separate border-spacing-0 overflow-auto rounded-lg',
           className
         )}
         {...props}
